@@ -1,0 +1,100 @@
+# {{ ansible_managed }}
+{% if alpine_nomad_server_enable %}
+name = "{{ ansible_hostname }}"
+{% endif %}
+datacenter = "{{ alpine_nomad_datacenter }}"
+data_dir  = "{{ alpine_nomad_data_dir }}"
+bind_addr = "{{ alpine_nomad_bind_addr }}"
+log_level = "{{ alpine_nomad_log_level }}"
+
+server {
+  enabled = {{ alpine_nomad_server_enable|lower }}
+{% if alpine_nomad_server_enable %}
+  server_join {
+  retry_join = [{% for item in alpine_nomad_server['retry_join'] %}"{{ item }}"{% if not loop.last %},{% endif %}{% endfor %}]
+    retry_max = 3
+    retry_interval = "15s"
+  }
+  bootstrap_expect = {{ alpine_nomad_server['bootstrap_expect'] }}
+{% endif %}
+}
+
+{% if alpine_nomad_server_enable %}
+ui {
+  enabled =  {{ alpine_nomad_server['ui']|lower }}
+{% if alpine_nomad_server['ui'] %}
+{% if alpine_nomad_consul_enable %}
+  consul {
+    ui_url = "{{ alpine_nomad_consul['ui'] }}"
+  }
+{% endif %}
+{% if alpine_nomad_vault_enable %}
+  vault {
+    ui_url = "{{ alpine_nomad_vault['ui'] }}"
+  }
+{% endif %}
+{% endif %}
+}
+{% endif %}
+
+acl {
+  enabled = {{ alpine_nomad_acl_enable|lower }}
+{% if alpine_nomad_acl_enable %}
+  token_ttl = {{ alpine_nomad_acl['token_ttl'] }}
+  policy_ttl = {{ alpine_nomad_acl['policy_ttl'] }}
+{% endif %}
+}
+
+{% if alpine_nomad_telemetry_enable %}
+telemetry {
+  collection_interval = "{{ alpine_nomad_telemetry['collection_interval'] }}"
+  disable_hostname = {{ alpine_nomad_telemetry['disable_hostname']|lower }}
+  publish_allocation_metrics = {{ alpine_nomad_telemetry['publish_allocation_metrics']|lower }}
+  publish_node_metrics = {{ alpine_nomad_telemetry['publish_node_metrics']|lower }}
+  prometheus_metrics = {{ alpine_nomad_telemetry['prometheus_metrics']|lower }}
+}
+{% endif %}
+
+{% if alpine_nomad_consul_enable %}
+consul {
+  address = "{{ alpine_nomad_consul['address'] }}"
+  token = "{{ alpine_nomad_consul['token'] }}"
+}
+{% endif %}
+
+vault {
+  enabled = {{ alpine_nomad_vault_enable|lower }}
+{% if alpine_nomad_vault_enable %}
+  address = "{{ alpine_nomad_vault['address'] }}"
+  token = "{{ alpine_nomad_vault['token'] }}"
+  tls_skip_verify = {{ alpine_nomad_vault['tls_skip_verify'] }}
+  create_from_role = "{{ alpine_nomad_vault['create_from_role'] }}"
+{% endif %}
+}
+
+
+client {
+  enabled = {{ alpine_nomad_client_enable|lower }}
+{% if alpine_nomad_client %}
+  node_class = "{{ alpine_nomad_client['node_class'] }}"
+  servers = [{% for item in alpine_nomad_server['retry_join'] %}"{{ item }}"{% if not loop.last %},{% endif %}{% endfor %}]
+  reserved {
+    cpu = "{{ alpine_nomad_client['reserved_cpu'] }}"
+    memory = "{{ alpine_nomad_client['reserved_memory'] }}"
+  }
+  cni_path = "{{ alpine_nomad_client['cni_path'] }}"
+{% endif %}
+}
+
+{% if alpine_nomad_client %}
+plugin "docker" {
+  config {
+    endpoint = "unix:///var/run/docker.sock"
+    allow_privileged = true
+    allow_caps = ["all"]
+    volumes {
+      enabled = true
+    }
+  }
+}
+{% endif %}
