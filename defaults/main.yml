@@ -4,3 +4,48 @@ hashi_nomad_install: true
 hashi_nomad_start_service: true
 hashi_nomad_version: latest
 hashi_nomad_deploy_method: host  # deployment method, either host or docker
+hashi_nomad_datacenter: dc1
+hashi_nomad_data_dir: /opt/nomad
+hashi_nomad_bind_addr: "0.0.0.0"
+hashi_nomad_log_level: INFO
+# nomad server
+hashi_nomad_server_enable: false
+hashi_nomad_server:
+  ui: true
+  bootstrap_expect: 1
+  retry_join:
+    - 127.0.0.1
+# nomad client
+hashi_nomad_client_enable: false
+hashi_nomad_client:
+  node_class: default
+  reserved_cpu: 2000
+  reserved_memory: 1000
+  cni_path: /opt/cni/bin
+# nomad acl
+hashi_nomad_acl_enable: false
+hashi_nomad_acl:
+  token_ttl: 30s
+  policy_ttl: 60s
+# nomad telemetry
+hashi_nomad_telemetry_enable: false
+hashi_nomad_telemetry:
+  collection_interval: 1s
+  disable_hostname: false
+  publish_allocation_metrics: false
+  publish_node_metrics: false
+  prometheus_metrics: false
+# nomad consul registration
+hashi_nomad_consul_enable: false
+hashi_nomad_consul:
+  ui: https://consul.ednz.fr/
+  address: "127.0.0.1:8500"
+  token: ""
+# nomad vault registration
+hashi_nomad_vault_enable: false
+hashi_nomad_vault:
+  ui: https://vault.ednz.fr/
+  address: https://vault.service.consul:8200
+  token: ""
+  tls_skip_verify: true
+  create_from_role: nomad-cluster
