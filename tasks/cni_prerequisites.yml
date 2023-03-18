@@ -1,0 +1,15 @@
+---
+# task/cni_prerequisites for hashicorp_nomad
+- name: "Check if cni plugin is already installed"
+  ansible.builtin.stat:
+    path: "{{ hashi_nomad_cni_plugins_install_path }}/version"
+  changed_when: false
+  check_mode: false
+  register: hashi_nomad_cni_plugins_is_installed
+
+- name: "Check current cni plugin version"
+  ansible.builtin.command: "cat {{ hashi_nomad_cni_plugins_install_path }}/version"
+  changed_when: false
+  check_mode: false
+  register: hashi_nomad_cni_plugins_current_version
+  when: hashi_nomad_cni_plugins_is_installed.stat.exists
