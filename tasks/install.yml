@@ -21,7 +21,7 @@
   vars:
     manage_apt_packages_list:
       - name: nomad
-        version: "{{ hashi_consul_version }}"
+        version: "{{ hashi_nomad_version }}"
         state: present
 
 - name: "Copy systemd service file for nomad"

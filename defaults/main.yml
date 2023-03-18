@@ -11,7 +11,7 @@ hashi_nomad_bind_addr: "0.0.0.0"
 hashi_nomad_log_level: INFO
 hashi_nomad_leave_on_terminate: false
 # nomad server
-hashi_nomad_server_enable: false
+hashi_nomad_server_enable: true
 hashi_nomad_server:
   ui: true
   bootstrap_expect: 1
@@ -63,6 +63,6 @@ hashi_nomad_vault:
   token: ""
   tls_skip_verify: true
   create_from_role: nomad-cluster
-hashi_nomad_cni_plugins_version: "1.1.2"
-hashi_nomad_cni_plugins_download_url: "https://github.com/containernetworking/plugins/releases/download/v{{ nomad_cni_plugins_version }}/cni-plugins-linux-{{ nomad_cni_plugins_arch }}-v{{ nomad_cni_plugins_version }}.tgz"
+hashi_nomad_cni_plugins_version: "1.2.0"
+hashi_nomad_cni_plugins_download_url: "https://github.com/containernetworking/plugins/releases/download/v{{ hashi_nomad_cni_plugins_version }}/cni-plugins-linux-{{ hashi_nomad_cni_plugins_arch }}-v{{ hashi_nomad_cni_plugins_version }}.tgz"
 hashi_nomad_cni_plugins_install_path: "/opt/cni/bin"

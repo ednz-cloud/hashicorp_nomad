@@ -6,7 +6,7 @@
     state: directory
     mode: "0775"
 
-- name: "Download cni plugins"
+- name: "Install cni plugins version:{{ hashi_nomad_cni_plugins_version }}"
   ansible.builtin.get_url:
     url: "{{ hashi_nomad_cni_plugins_download_url }}"
     dest: "/tmp/cni_plugin.tgz"

@@ -16,8 +16,8 @@
   ansible.builtin.file:
     path: "/etc/nomad.d"
     state: directory
-    owner: consul
-    group: consul
+    owner: nomad
+    group: nomad
     mode: '0755'
 
 - name: "Create directory {{ hashi_nomad_data_dir }}"

@@ -2,8 +2,8 @@
 # task/configure file for hashicorp_nomad
 - name: "Copy nomad.hcl template"
   ansible.builtin.template:
-    src: consul.hcl.j2
-    dest: /etc/nomad.d/consul.hcl
+    src: nomad.hcl.j2
+    dest: /etc/nomad.d/nomad.hcl
     owner: nomad
     group: nomad
     mode: '0600'
@@ -11,7 +11,7 @@
 
 - name: "Create empty nomad.env"
   ansible.builtin.file:
-    path: "/etc/consul.d/nomad.env"
+    path: "/etc/nomad.d/nomad.env"
     owner: nomad
     group: nomad
     mode: '0600'

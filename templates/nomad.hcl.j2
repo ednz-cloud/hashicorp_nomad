@@ -44,9 +44,9 @@ acl {
   token_ttl = "{{ hashi_nomad_acl['token_ttl'] }}"
   policy_ttl = "{{ hashi_nomad_acl['policy_ttl'] }}"
   role_ttl: "{{ hashi_nomad_acl['policy_ttl'] }}"
-  replication_token: "{{ hashi_nomad_acl['replication_token'] }}"
-  token_min_expiration_ttl: "{{ hashi_nomad_acl['token_min_expiration_ttl'] }}"
-  token_max_expiration_ttl: "{{ hashi_nomad_acl['token_max_expiration_ttl'] }}"
+  replication_token = "{{ hashi_nomad_acl['replication_token'] }}"
+  token_min_expiration_ttl = "{{ hashi_nomad_acl['token_min_expiration_ttl'] }}"
+  token_max_expiration_ttl = "{{ hashi_nomad_acl['token_max_expiration_ttl'] }}"
 {% endif %}
 }
 
@@ -58,14 +58,15 @@ telemetry {
   publish_node_metrics = {{ hashi_nomad_telemetry['publish_node_metrics']|lower }}
   prometheus_metrics = {{ hashi_nomad_telemetry['prometheus_metrics']|lower }}
 }
-{% endif %}
 
+{% endif %}
 {% if hashi_nomad_consul_enable %}
 consul {
   address = "{{ hashi_nomad_consul['address'] }}"
   token = "{{ hashi_nomad_consul['token'] }}"
   auto_advertise = {{ hashi_nomad_consul['auto_advertise']|lower }}
 }
+
 {% endif %}
 
 vault {
@@ -78,10 +79,9 @@ vault {
 {% endif %}
 }
 
-
 client {
   enabled = {{ hashi_nomad_client_enable|lower }}
-{% if hashi_nomad_client %}
+{% if hashi_nomad_client_enable %}
   node_class = "{{ hashi_nomad_client['node_class'] }}"
   servers = [{% for item in hashi_nomad_server['retry_join'] %}"{{ item }}"{% if not loop.last %},{% endif %}{% endfor %}]
   reserved {
@@ -89,8 +89,8 @@ client {
     memory = "{{ hashi_nomad_client['reserved_memory'] }}"
   }
   cni_path = "{{ hashi_nomad_client['cni_path'] }}"
-  bridge_network_name: "{{ hashi_nomad_client['bridge_network_name'] }}"
-  bridge_network_subnet: "{{ hashi_nomad_client['bridge_network_subnet'] }}"
+  bridge_network_name = "{{ hashi_nomad_client['bridge_network_name'] }}"
+  bridge_network_subnet = "{{ hashi_nomad_client['bridge_network_subnet'] }}"
 {% endif %}
 }
 

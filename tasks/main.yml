@@ -14,7 +14,7 @@
       ansible.builtin.include_tasks: cni_prerequisites.yml
 
     - name: "Import cni_install.yml"
-      ansible.builtin.include_taks: cni_install.yml
+      ansible.builtin.include_tasks: cni_install.yml
 
 - name: "Import configure.yml"
   ansible.builtin.include_tasks: configure.yml
