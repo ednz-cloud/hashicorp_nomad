@@ -24,9 +24,9 @@
         version: "{{ hashi_consul_version }}"
         state: present
 
-- name: "Copy systemd service file for consul"
+- name: "Copy systemd service file for nomad"
   ansible.builtin.copy:
-    src: "files/consul.service"
+    src: "files/nomad.service"
     dest: "/lib/systemd/system/nomad.service"
     owner: root
     group: root

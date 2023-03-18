@@ -6,6 +6,7 @@ datacenter = "{{ hashi_nomad_datacenter }}"
 data_dir  = "{{ hashi_nomad_data_dir }}"
 bind_addr = "{{ hashi_nomad_bind_addr }}"
 log_level = "{{ hashi_nomad_log_level }}"
+leave_on_terminate = {{ hashi_nomad_leave_on_terminate|lower }}
 
 server {
   enabled = {{ hashi_nomad_server_enable|lower }}
@@ -40,8 +41,12 @@ ui {
 acl {
   enabled = {{ hashi_nomad_acl_enable|lower }}
 {% if hashi_nomad_acl_enable %}
-  token_ttl = {{ hashi_nomad_acl['token_ttl'] }}
-  policy_ttl = {{ hashi_nomad_acl['policy_ttl'] }}
+  token_ttl = "{{ hashi_nomad_acl['token_ttl'] }}"
+  policy_ttl = "{{ hashi_nomad_acl['policy_ttl'] }}"
+  role_ttl: "{{ hashi_nomad_acl['policy_ttl'] }}"
+  replication_token: "{{ hashi_nomad_acl['replication_token'] }}"
+  token_min_expiration_ttl: "{{ hashi_nomad_acl['token_min_expiration_ttl'] }}"
+  token_max_expiration_ttl: "{{ hashi_nomad_acl['token_max_expiration_ttl'] }}"
 {% endif %}
 }
 
@@ -59,6 +64,7 @@ telemetry {
 consul {
   address = "{{ hashi_nomad_consul['address'] }}"
   token = "{{ hashi_nomad_consul['token'] }}"
+  auto_advertise = {{ hashi_nomad_consul['auto_advertise']|lower }}
 }
 {% endif %}
 
@@ -83,6 +89,8 @@ client {
     memory = "{{ hashi_nomad_client['reserved_memory'] }}"
   }
   cni_path = "{{ hashi_nomad_client['cni_path'] }}"
+  bridge_network_name: "{{ hashi_nomad_client['bridge_network_name'] }}"
+  bridge_network_subnet: "{{ hashi_nomad_client['bridge_network_subnet'] }}"
 {% endif %}
 }
 

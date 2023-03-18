@@ -9,6 +9,7 @@ hashi_nomad_datacenter: dc1
 hashi_nomad_data_dir: /opt/nomad
 hashi_nomad_bind_addr: "0.0.0.0"
 hashi_nomad_log_level: INFO
+hashi_nomad_leave_on_terminate: false
 # nomad server
 hashi_nomad_server_enable: false
 hashi_nomad_server:
@@ -20,21 +21,32 @@ hashi_nomad_server:
 hashi_nomad_client_enable: false
 hashi_nomad_client:
   node_class: default
-  reserved_cpu: 2000
-  reserved_memory: 1000
+  reserved_cpu: 500
+  reserved_memory: 300
   cni_path: "{{ hashi_nomad_cni_plugins_install_path }}"
+  bridge_network_name: nomad
+  bridge_network_subnet: "172.26.64.0/20"
 # nomad acl
 hashi_nomad_acl_enable: false
 hashi_nomad_acl:
   token_ttl: 30s
-  policy_ttl: 60s
+  policy_ttl: 30s
+  role_ttl: 30s
+  replication_token: ""
+  token_min_expiration_ttl: 1m
+  token_max_expiration_ttl: 24h
 # nomad telemetry
 hashi_nomad_telemetry_enable: false
 hashi_nomad_telemetry:
+  # common
   collection_interval: 1s
   disable_hostname: false
+  use_node_name: false
   publish_allocation_metrics: false
   publish_node_metrics: false
+  prefix_filter: false
+  disable_dispatched_job_summary_metrics: []
+  # prometheus
   prometheus_metrics: false
 # nomad consul registration
 hashi_nomad_consul_enable: false
@@ -42,6 +54,7 @@ hashi_nomad_consul:
   ui: https://consul.service.consul/
   address: "127.0.0.1:8500"
   token: ""
+  auto_advertise: true
 # nomad vault registration
 hashi_nomad_vault_enable: false
 hashi_nomad_vault:

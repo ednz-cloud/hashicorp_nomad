@@ -1,2 +1,15 @@
 ---
 # handlers file for hashicorp_nomad
+- name: "Enable nomad service"
+  ansible.builtin.service:
+    name: nomad
+    enabled: true
+  listen: "systemctl-enable-nomad"
+  notify: "systemctl-restart-nomad"
+
+- name: "Start nomad service"
+  ansible.builtin.service:
+    name: nomad
+    state: restarted
+  listen: "systemctl-restart-nomad"
+  when: hashi_nomad_start_service

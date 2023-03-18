@@ -3,6 +3,10 @@
 - name: "Import prerequisites.yml"
   ansible.builtin.include_tasks: prerequisites.yml
 
+- name: "Import install.yml"
+  ansible.builtin.include_tasks: install.yml
+  when: hashi_nomad_install
+
 - name: "Import CNI related tasks"
   when: hashi_nomad_cni_plugins_install
   block:
@@ -11,10 +15,6 @@
 
     - name: "Import cni_install.yml"
       ansible.builtin.include_taks: cni_install.yml
-
-- name: "Import install.yml"
-  ansible.builtin.include_tasks: install.yml
-  when: hashi_nomad_install
 
 - name: "Import configure.yml"
   ansible.builtin.include_tasks: configure.yml
