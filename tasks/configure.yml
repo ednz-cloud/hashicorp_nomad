@@ -3,9 +3,9 @@
 - name: "Copy nomad.hcl template"
   ansible.builtin.template:
     src: nomad.hcl.j2
-    dest: /etc/nomad.d/nomad.hcl
-    owner: nomad
-    group: nomad
+    dest: "{{ hashi_nomad_config_dir }}/nomad.hcl"
+    owner: "{{ hashi_nomad_user }}"
+    group: "{{ hashi_nomad_group }}"
     mode: '0600'
   notify:
     - "systemctl-enable-nomad"
@@ -13,8 +13,8 @@
 
 - name: "Create empty nomad.env"
   ansible.builtin.file:
-    path: "/etc/nomad.d/nomad.env"
-    owner: nomad
-    group: nomad
+    path: "{{ hashi_nomad_config_dir }}/nomad.env"
+    owner: "{{ hashi_nomad_user }}"
+    group: "{{ hashi_nomad_group }}"
     mode: '0600'
     state: file
