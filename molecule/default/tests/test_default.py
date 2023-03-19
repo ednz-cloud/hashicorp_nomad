@@ -64,5 +64,5 @@ def test_nomad_interaction(host):
     nomad_var_delete = host.check_output("nomad var purge secret/foobar")
     assert host.check_output("nomad server members")
     assert '"Items": {\n    "foo": "bar"\n  }' in nomad_var_put
-    assert "foo = bar" in nomad_var_get
-    assert nomad_var_delete == 'Successfully purged variable \\"secret/foobar\\"!'
+    assert '"Items": {\n    "foo": "bar"\n  }' in nomad_var_get
+    assert nomad_var_delete == 'Successfully purged variable \"secret/foobar\"!'

@@ -25,10 +25,9 @@
         state: present
 
 - name: "Copy systemd service file for nomad"
-  ansible.builtin.copy:
-    src: "files/nomad.service"
+  ansible.builtin.template:
+    src: "nomad.service.j2"
     dest: "/lib/systemd/system/nomad.service"
     owner: root
     group: root
     mode: '0644'
-    force: false
