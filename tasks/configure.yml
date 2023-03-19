@@ -7,7 +7,9 @@
     owner: nomad
     group: nomad
     mode: '0600'
-  notify: "systemctl-enable-nomad"
+  notify:
+    - "systemctl-enable-nomad"
+    - "systemctl-restart-nomad"
 
 - name: "Create empty nomad.env"
   ansible.builtin.file:

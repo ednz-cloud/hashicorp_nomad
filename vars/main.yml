@@ -7,3 +7,4 @@ hashi_nomad_cni_plugins_arch_map:
   armv7l: 'arm'
   armv6l: 'arm'
 hashi_nomad_cni_plugins_arch: "{{ hashi_nomad_cni_plugins_arch_map[ansible_architecture] | default(ansible_architecture) }}"
+hashi_nomad_cni_plugins_download_url: "https://github.com/containernetworking/plugins/releases/download/v{{ hashi_nomad_cni_plugins_version }}/cni-plugins-linux-{{ hashi_nomad_cni_plugins_arch }}-v{{ hashi_nomad_cni_plugins_version }}.tgz"

@@ -5,7 +5,6 @@
     name: nomad
     enabled: true
   listen: "systemctl-enable-nomad"
-  notify: "systemctl-restart-nomad"
 
 - name: "Start nomad service"
   ansible.builtin.service:

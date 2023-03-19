@@ -3,11 +3,17 @@
 hashi_nomad_install: true
 hashi_nomad_cni_plugins_install: true
 hashi_nomad_start_service: true
+hashi_nomad_cni_plugins_version: "1.2.0"
+hashi_nomad_cni_plugins_install_path: "/opt/cni/bin"
 hashi_nomad_version: latest
 hashi_nomad_deploy_method: host  # deployment method, either host or docker
 hashi_nomad_datacenter: dc1
 hashi_nomad_data_dir: /opt/nomad
 hashi_nomad_bind_addr: "0.0.0.0"
+hashi_nomad_advertise_addr:
+  http: "{{ ansible_default_ipv4.address }}"
+  rpc: "{{ ansible_default_ipv4.address }}"
+  serf: "{{ ansible_default_ipv4.address }}"
 hashi_nomad_log_level: INFO
 hashi_nomad_leave_on_terminate: false
 # nomad server
@@ -16,7 +22,7 @@ hashi_nomad_server:
   ui: true
   bootstrap_expect: 1
   retry_join:
-    - 127.0.0.1
+    - "{{ ansible_default_ipv4.address }}"
 # nomad client
 hashi_nomad_client_enable: false
 hashi_nomad_client:
@@ -38,7 +44,6 @@ hashi_nomad_acl:
 # nomad telemetry
 hashi_nomad_telemetry_enable: false
 hashi_nomad_telemetry:
-  # common
   collection_interval: 1s
   disable_hostname: false
   use_node_name: false
@@ -46,7 +51,6 @@ hashi_nomad_telemetry:
   publish_node_metrics: false
   prefix_filter: false
   disable_dispatched_job_summary_metrics: []
-  # prometheus
   prometheus_metrics: false
 # nomad consul registration
 hashi_nomad_consul_enable: false
@@ -63,6 +67,10 @@ hashi_nomad_vault:
   token: ""
   tls_skip_verify: true
   create_from_role: nomad-cluster
-hashi_nomad_cni_plugins_version: "1.2.0"
-hashi_nomad_cni_plugins_download_url: "https://github.com/containernetworking/plugins/releases/download/v{{ hashi_nomad_cni_plugins_version }}/cni-plugins-linux-{{ hashi_nomad_cni_plugins_arch }}-v{{ hashi_nomad_cni_plugins_version }}.tgz"
-hashi_nomad_cni_plugins_install_path: "/opt/cni/bin"
+# nomad docker driver
+hashi_nomad_docker_driver_enable: false
+hashi_nomad_docker_driver:
+  endpoint: "unix:///var/run/docker.sock"
+  allow_privileged: false
+  allow_caps: ["all"]
+  volumes_enabled: true

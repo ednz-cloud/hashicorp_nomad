@@ -7,6 +7,11 @@ data_dir  = "{{ hashi_nomad_data_dir }}"
 bind_addr = "{{ hashi_nomad_bind_addr }}"
 log_level = "{{ hashi_nomad_log_level }}"
 leave_on_terminate = {{ hashi_nomad_leave_on_terminate|lower }}
+advertise {
+  http = "{{ hashi_nomad_advertise_addr['http'] }}"
+  rpc = "{{ hashi_nomad_advertise_addr['rpc'] }}"
+  serf = "{{ hashi_nomad_advertise_addr['serf'] }}"
+}
 
 server {
   enabled = {{ hashi_nomad_server_enable|lower }}
@@ -93,15 +98,16 @@ client {
 {% endif %}
 }
 
-{% if hashi_nomad_client %}
+{% if hashi_nomad_docker_driver_enable %}
 plugin "docker" {
   config {
-    endpoint = "unix:///var/run/docker.sock"
-    allow_privileged = true
-    allow_caps = ["all"]
+    endpoint = "{{ hashi_nomad_docker_driver['endpoint'] }}"
+    allow_privileged = {{ hashi_nomad_docker_driver['allow_privileged']|lower }}
+    allow_caps = [{% for item in hashi_nomad_docker_driver['allow_caps'] %}"{{ item }}"{% if not loop.last %},{% endif %}{% endfor %}]
     volumes {
-      enabled = true
+      enabled = {{ hashi_nomad_docker_driver['volumes_enabled']|lower }}
     }
   }
 }
+
 {% endif %}
