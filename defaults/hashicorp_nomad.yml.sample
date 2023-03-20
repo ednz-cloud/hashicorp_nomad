@@ -1,5 +1,4 @@
 ---
-# # defaults file for hashicorp_nomad
 # hashi_nomad_install: true
 # hashi_nomad_cni_plugins_install: true
 # hashi_nomad_start_service: true
