@@ -17,14 +17,14 @@ hashi_nomad_advertise_addr:
 hashi_nomad_log_level: INFO
 hashi_nomad_leave_on_terminate: false
 # nomad server
-hashi_nomad_server_enable: true
+hashi_nomad_server_enabled: true
 hashi_nomad_server:
   ui: true
   bootstrap_expect: 1
   retry_join:
     - "{{ ansible_default_ipv4.address }}"
 # nomad client
-hashi_nomad_client_enable: false
+hashi_nomad_client_enabled: false
 hashi_nomad_client:
   node_class: default
   reserved_cpu: 500
@@ -33,7 +33,7 @@ hashi_nomad_client:
   bridge_network_name: nomad
   bridge_network_subnet: "172.26.64.0/20"
 # nomad acl
-hashi_nomad_acl_enable: false
+hashi_nomad_acl_enabled: false
 hashi_nomad_acl:
   token_ttl: 30s
   policy_ttl: 30s
@@ -41,7 +41,7 @@ hashi_nomad_acl:
   token_min_expiration_ttl: 1m
   token_max_expiration_ttl: 24h
 # nomad telemetry
-hashi_nomad_telemetry_enable: false
+hashi_nomad_telemetry_enabled: false
 hashi_nomad_telemetry:
   collection_interval: 1s
   disable_hostname: false
@@ -52,22 +52,22 @@ hashi_nomad_telemetry:
   disable_dispatched_job_summary_metrics: []
   prometheus_metrics: false
 # nomad consul registration
-hashi_nomad_consul_enable: false
+hashi_nomad_consul_enabled: false
 hashi_nomad_consul:
-  ui: https://consul.service.consul/
+  ui: http://consul.service.consul/
   address: "127.0.0.1:8500"
   token: ""
   auto_advertise: true
 # nomad vault registration
-hashi_nomad_vault_enable: false
+hashi_nomad_vault_enabled: false
 hashi_nomad_vault:
-  ui: https://vault.service.consul/
-  address: https://vault.service.consul:8200
+  ui: http://vault.service.consul/
+  address: http://vault.service.consul:8200
   token: ""
   tls_skip_verify: true
   create_from_role: nomad-cluster
 # nomad docker driver
-hashi_nomad_docker_driver_enable: false
+hashi_nomad_docker_driver_enabled: false
 hashi_nomad_docker_driver:
   endpoint: "unix:///var/run/docker.sock"
   allow_privileged: false

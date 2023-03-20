@@ -4,14 +4,14 @@ Documentation=https://developer.hashicorp.com/nomad/docs
 Wants=network-online.target
 After=network-online.target
 ConditionFileNotEmpty={{ hashi_nomad_config_dir }}/nomad.hcl
-{% if hashi_nomad_consul_enable %}
+{% if hashi_nomad_consul_enabled %}
 Wants=consul.service
 After=consul.service
 {% endif %}
 
 [Service]
 EnvironmentFile=-{{ hashi_nomad_config_dir }}/nomad.env
-{% if not hashi_nomad_client_enable %}
+{% if not hashi_nomad_client_enabled %}
 User={{ hashi_nomad_user }}
 Group={{ hashi_nomad_group}}
 {% else %}
