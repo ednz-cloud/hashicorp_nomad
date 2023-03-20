@@ -1,4 +1,5 @@
 """Role testing files using testinfra."""
+import json
 
 def test_hosts_file(host):
     """Validate /etc/hosts file."""
@@ -59,10 +60,12 @@ def test_nomad_service(host):
 
 def test_nomad_interaction(host):
     """Validate interaction with nomad."""
-    nomad_var_put = host.check_output("nomad var put secret/foobar foo=bar")
-    nomad_var_get = host.check_output("nomad var get secret/foobar")
-    nomad_var_delete = host.check_output("nomad var purge secret/foobar")
-    assert host.check_output("nomad server members")
+    nomad_acl_bootstrap = json.loads(host.check_output("nomad acl bootstrap -json"))
+    nomad_token = nomad_acl_bootstrap['SecretID']
+    nomad_var_put = host.check_output("NOMAD_TOKEN=" + nomad_token + " nomad var put secret/foobar foo=bar")
+    nomad_var_get = host.check_output("NOMAD_TOKEN=" + nomad_token + " nomad var get secret/foobar")
+    nomad_var_delete = host.check_output("NOMAD_TOKEN=" + nomad_token + " nomad var purge secret/foobar")
+    assert host.check_output("NOMAD_TOKEN=" + nomad_token + " nomad server members")
     assert '"Items": {\n    "foo": "bar"\n  }' in nomad_var_put
     assert '"Items": {\n    "foo": "bar"\n  }' in nomad_var_get
     assert nomad_var_delete == 'Successfully purged variable \"secret/foobar\"!'

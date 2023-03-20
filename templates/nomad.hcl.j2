@@ -48,8 +48,7 @@ acl {
 {% if hashi_nomad_acl_enable %}
   token_ttl = "{{ hashi_nomad_acl['token_ttl'] }}"
   policy_ttl = "{{ hashi_nomad_acl['policy_ttl'] }}"
-  role_ttl: "{{ hashi_nomad_acl['policy_ttl'] }}"
-  replication_token = "{{ hashi_nomad_acl['replication_token'] }}"
+  role_ttl = "{{ hashi_nomad_acl['policy_ttl'] }}"
   token_min_expiration_ttl = "{{ hashi_nomad_acl['token_min_expiration_ttl'] }}"
   token_max_expiration_ttl = "{{ hashi_nomad_acl['token_max_expiration_ttl'] }}"
 {% endif %}
