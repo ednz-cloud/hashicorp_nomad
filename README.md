@@ -16,7 +16,7 @@ Available variables are listed below, along with default values. A sample file f
 ```yaml
 hashi_nomad_install: true # by default, set to true
 ```
-This variable defines if the consul package is to be installed or not before configuring. If you install consul using another task, you can set this to `false`.
+This variable defines if the nomad package is to be installed or not before configuring. If you install nomad using another task, you can set this to `false`.
 
 ```yaml
 hashi_nomad_start_service: true
