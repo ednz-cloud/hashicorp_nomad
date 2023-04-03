@@ -13,7 +13,7 @@ After=consul.service
 EnvironmentFile=-{{ hashi_nomad_config_dir }}/nomad.env
 {% if not hashi_nomad_client_enabled %}
 User={{ hashi_nomad_user }}
-Group={{ hashi_nomad_group}}
+Group={{ hashi_nomad_group }}
 {% else %}
 User=root
 Group=root
