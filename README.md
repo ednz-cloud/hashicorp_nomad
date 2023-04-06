@@ -35,7 +35,8 @@ This variable defines the method of deployment of nomad. The `host` method insta
 > Currently, only the `host` method is available, the `docker` method will be added later.
 
 ```yaml
-hashi_nomad_env_variables: [] # by default, set to empty
+hashi_nomad_env_variables: # by default, set to empty
+  env_var: value
 ```
 This value is a list of key/value that will populate the `nomad.env` file. You do not have to capitalize the KEYS, as it will be done automatically.
 
