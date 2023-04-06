@@ -11,10 +11,10 @@
     - "systemctl-enable-nomad"
     - "systemctl-restart-nomad"
 
-- name: "Create empty nomad.env"
-  ansible.builtin.file:
-    path: "{{ hashi_nomad_config_dir }}/nomad.env"
+- name: "Create nomad.env"
+  ansible.builtin.template:
+    src: nomad.env.j2
+    dest: "{{ hashi_nomad_config_dir }}/nomad.env"
     owner: "{{ hashi_nomad_user }}"
     group: "{{ hashi_nomad_group }}"
     mode: '0600'
-    state: file

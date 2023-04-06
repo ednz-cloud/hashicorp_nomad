@@ -26,13 +26,18 @@ This variable defines if the nomad service should be started once it has been co
 ```yaml
 hashi_nomad_version: latest # by default, set to latest
 ```
-This variable specifies the version of nomad to install when `hashi_nomad_install` is set to `true`. The version to specify is the version of the package on the hashicorp repository (`1.5.1-1` for example).
+This variable specifies the version of nomad to install when `hashi_nomad_install` is set to `true`. The version to specify is the version of the package on the hashicorp repository (`1.5.1-1` for example). This can be found by running `apt-cache madison consul` on a machine with the repository installed.
 
 ```yaml
 hashi_nomad_deploy_method: host # by default, set to host
 ```
 This variable defines the method of deployment of nomad. The `host` method installs the binary directly on the host, and runs nomad as a systemd service. The `docker` method install nomad as a docker container.
 > Currently, only the `host` method is available, the `docker` method will be added later.
+
+```yaml
+hashi_nomad_env_variables: [] # by default, set to empty
+```
+This value is a list of key/value that will populate the `nomad.env` file. You do not have to capitalize the KEYS, as it will be done automatically.
 
 ```yaml
 hashi_nomad_server_enabled: true # by default, set to true
