@@ -20,13 +20,13 @@ def test_nomad_user_group(host):
 def test_nomad_config(host):
     """Validate /etc/nomad.d/ files."""
     etc_nomad_d_nomad_env = host.file("/etc/nomad.d/nomad.env")
-    etc_nomad_d_nomad_hcl = host.file("/etc/nomad.d/nomad.hcl")
-    for file in etc_nomad_d_nomad_env, etc_nomad_d_nomad_hcl:
+    etc_nomad_d_nomad_json = host.file("/etc/nomad.d/nomad.json")
+    for file in etc_nomad_d_nomad_env, etc_nomad_d_nomad_json:
         assert file.exists
         assert file.user == "nomad"
         assert file.group == "nomad"
         assert file.mode == 0o600
-        if file == etc_nomad_d_nomad_hcl:
+        if file == etc_nomad_d_nomad_json:
             assert file.content_string != ""
 
 def test_nomad_storage(host):
@@ -40,7 +40,7 @@ def test_nomad_storage(host):
 
 def test_nomad_service_file(host):
     """Validate nomad service file."""
-    lib_systemd_system_nomad_service = host.file("/lib/systemd/system/nomad.service")
+    lib_systemd_system_nomad_service = host.file("/etc/systemd/system/nomad.service")
     assert lib_systemd_system_nomad_service.exists
     assert lib_systemd_system_nomad_service.user == "root"
     assert lib_systemd_system_nomad_service.group == "root"
@@ -56,7 +56,7 @@ def test_nomad_service(host):
     assert nomad_service.systemd_properties["User"] == "nomad"
     assert nomad_service.systemd_properties["Group"] == "nomad"
     assert nomad_service.systemd_properties["EnvironmentFiles"] == "/etc/nomad.d/nomad.env (ignore_errors=yes)"
-    assert nomad_service.systemd_properties["FragmentPath"] == "/lib/systemd/system/nomad.service"
+    assert nomad_service.systemd_properties["FragmentPath"] == "/etc/systemd/system/nomad.service"
 
 def test_nomad_interaction(host):
     """Validate interaction with nomad."""

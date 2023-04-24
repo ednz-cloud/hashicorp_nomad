@@ -1,9 +1,14 @@
 ---
 # task/configure file for hashicorp_nomad
-- name: "Copy nomad.hcl template"
+- name: "Ensure default nomad.hcl is removed"
+  ansible.builtin.file:
+    path: /etc/nomad.d/nomad.hcl
+    state: absent
+
+- name: "Copy nomad.json template"
   ansible.builtin.template:
-    src: nomad.hcl.j2
-    dest: "{{ hashi_nomad_config_dir }}/nomad.hcl"
+    src: nomad.json.j2
+    dest: "{{ hashi_nomad_config_dir }}/nomad.json"
     owner: "{{ hashi_nomad_user }}"
     group: "{{ hashi_nomad_group }}"
     mode: '0600'
