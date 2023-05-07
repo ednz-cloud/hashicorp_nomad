@@ -16,4 +16,5 @@
     name: nomad
     state: restarted
   listen: "systemctl-restart-nomad"
+  throttle: 1
   when: hashi_nomad_start_service
