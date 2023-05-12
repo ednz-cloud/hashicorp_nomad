@@ -8,6 +8,9 @@ hashi_nomad_version: latest
 hashi_nomad_deploy_method: host  # deployment method, either host or docker
 hashi_nomad_env_variables: {}
 hashi_nomad_data_dir: /opt/nomad
+hashi_nomad_extra_files: true
+hashi_nomad_extra_files_src: /tmp/extra_files
+hashi_nomad_extra_files_dst: /etc/nomad.d/extra_files
 #! nomad configuration
 hashi_nomad_configuration:
   bind_addr: "0.0.0.0"
