@@ -56,6 +56,21 @@ hashi_nomad_env_variables: # by default, set to empty
 This value is a list of key/value that will populate the `nomad.env` file. You do not have to capitalize the KEYS, as it will be done automatically.
 
 ```yaml
+hashi_nomad_extra_files: false # by default, set to false
+```
+This variable defines whether or not there is extra configuration files to copy to the target. If there are, these extra files are expected to be jinja2 templates located all in the same directory, and will be copied to the specified directory on the target machine.
+
+```yaml
+hashi_nomad_extra_files_src: /tmp/extra_files # by default, set to /tmp/extra_files
+```
+This variable defines the source directory (without the trailing /) for the extra files to be copied in case there are some.
+
+```yaml
+hashi_nomad_extra_files_dst: /etc/nomad.d/extra_files # by default, set to /etc/nomad.d/extra_files
+```
+This variable defines the destination directory (without the trailing /) for the extra files to be copied.
+
+```yaml
 hashi_nomad_configuration: {} # by default, set to a simple configuration
 ```
 This variable sets all of the configuration parameters for nomad. For more information on all of them, please check the [documentation](https://developer.hashicorp.com/nomad/docs/configuration). This variable is parsed and converted to json format to create the config file, so each key and value should be set according to the documentation. This method of passing configuration allows for compatibility with every configuration parameters that nomad has to offer. The defaults are simply here to deploy a simple, single-node nomad server without much configuration, and should NOT be used in production. You will want to edit this to deploy production-ready clusters.
