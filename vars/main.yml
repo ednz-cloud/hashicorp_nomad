@@ -26,4 +26,4 @@ hashi_nomad_repository:
 hashi_nomad_packages:
   - name: nomad
     version: "{{ hashi_nomad_version }}"
-    state: present
+    state: "{% if hashi_nomad_auto_update %}latest{% else %}present{% endif %}"

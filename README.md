@@ -19,6 +19,11 @@ hashi_nomad_install: true # by default, set to true
 This variable defines if the nomad package is to be installed or not before configuring. If you install nomad using another task, you can set this to `false`.
 
 ```yaml
+hashi_nomad_auto_update: false # by default, set to false
+```
+This variable allows you to choose to automatically update nomad if a newer version is available. Updating nomad is usually pretty safe if done on a regular basis, but for better control over the upgrade process, see `hashi_nomad_version`.
+
+```yaml
 hashi_nomad_cni_plugins_install: true # by default, set to true
 ```
 This variable defines whether or not to install the CNI plugins on the host. Defaults to `true`.

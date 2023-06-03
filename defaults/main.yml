@@ -1,6 +1,7 @@
 ---
 # defaults file for hashicorp_nomad
 hashi_nomad_install: true
+hashi_nomad_auto_update: false
 hashi_nomad_cni_plugins_install: true
 hashi_nomad_start_service: true
 hashi_nomad_cni_plugins_version: latest
