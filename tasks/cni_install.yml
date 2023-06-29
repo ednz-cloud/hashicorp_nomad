@@ -1,5 +1,5 @@
 ---
-# task/cni_install for hashicorp_nomad
+# task/cni_install file for hashicorp_nomad
 - name: "Get release for cni_plugins:{{ hashi_nomad_cni_plugins_version }}"
   vars:
     _cni_plugins_url_ext: "{% if hashi_nomad_cni_plugins_version == 'latest'%}releases{% else %}releases/tags{% endif %}"

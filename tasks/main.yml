@@ -1,5 +1,5 @@
 ---
-# tasks file for hashicorp_nomad
+# task/main file for hashicorp_nomad
 - name: "Import prerequisites.yml"
   ansible.builtin.include_tasks: prerequisites.yml
 
