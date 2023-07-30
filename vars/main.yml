@@ -1,8 +1,5 @@
 ---
 # vars file for hashicorp_nomad
-hashi_nomad_prerequisites_roles:
-  - ednxzu.manage_repositories
-  - ednxzu.manage_apt_packages
 hashi_nomad_user: nomad
 hashi_nomad_group: nomad
 hashi_nomad_config_dir: "/etc/nomad.d"
