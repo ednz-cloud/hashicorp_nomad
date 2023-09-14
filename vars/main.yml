@@ -13,13 +13,17 @@ hashi_nomad_cni_plugins_arch: "{{ hashi_nomad_cni_plugins_arch_map[ansible_archi
 hashi_nomad_cni_plugins_github_api: https://api.github.com/repos/containernetworking/plugins
 hashi_nomad_cni_plugins_github_url: https://github.com/containernetworking/plugins
 hashi_nomad_repository:
-  - uri: "https://apt.releases.hashicorp.com"
-    gpg_key: "https://apt.releases.hashicorp.com/gpg"
+  - name: hashicorp
+    uri: "https://apt.releases.hashicorp.com"
     comments: "hashicorp repository"
-    type: "deb"
-    suites: "{{ ansible_distribution_release }}"
-    components: "main"
-    filename: "hashicorp"
+    types:
+      - deb
+    suites:
+      - "{{ ansible_distribution_release }}"
+    components:
+      - main
+    options:
+      Signed-By: "https://apt.releases.hashicorp.com/gpg"
 hashi_nomad_packages:
   - name: nomad
     version: "{{ hashi_nomad_version }}"
