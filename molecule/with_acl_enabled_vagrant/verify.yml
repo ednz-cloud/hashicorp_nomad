@@ -116,25 +116,42 @@
               - ansible_facts.services['nomad.service']['state'] == 'running'
               - ansible_facts.services['nomad.service']['status'] == 'enabled'
 
+    - name: "Test: bootstrap acl nomad"
+      block:
+        - name: "Command nomad acl bootstrap"
+          ansible.builtin.command: "nomad acl bootstrap -json"
+          changed_when: false
+          register: nomad_acl_bootstrap
+
     - name: "Test: interaction nomad"
+      vars:
+        acl_token: "{{ nomad_acl_bootstrap.stdout|from_json|json_query('SecretID') }}"
       block:
         - name: "Command nomad var put"
           ansible.builtin.command: "nomad var put secret/foobar foo=bar"
+          environment:
+            NOMAD_TOKEN: "{{ acl_token }}"
           changed_when: false
           register: nomad_var_put
 
         - name: "Command nomad var get"
           ansible.builtin.command: "nomad var get secret/foobar"
+          environment:
+            NOMAD_TOKEN: "{{ acl_token }}"
           changed_when: false
           register: nomad_var_get
 
         - name: "Command nomad var purge"
           ansible.builtin.command: "nomad var purge secret/foobar"
+          environment:
+            NOMAD_TOKEN: "{{ acl_token }}"
           changed_when: false
           register: nomad_var_purge
 
         - name: "Command nomad server members"
           ansible.builtin.command: "nomad server members"
+          environment:
+            NOMAD_TOKEN: "{{ acl_token }}"
           changed_when: false
           register: nomad_server_members
 
