@@ -4,7 +4,6 @@
   ansible.builtin.group:
     name: "{{ hashi_nomad_user }}"
     state: present
-  become: true
 
 - name: "Create user {{ hashi_nomad_user }}"
   ansible.builtin.user:
@@ -12,7 +11,6 @@
     group: "{{ hashi_nomad_group }}"
     shell: /bin/false
     state: present
-  become: true
 
 - name: "Create directory {{ hashi_nomad_config_dir }}"
   ansible.builtin.file:
@@ -21,7 +19,6 @@
     owner: "{{ hashi_nomad_user }}"
     group: "{{ hashi_nomad_group }}"
     mode: '0755'
-  become: true
 
 - name: "Create directory {{ hashi_nomad_data_dir }}"
   ansible.builtin.file:
@@ -30,4 +27,3 @@
     owner: "{{ hashi_nomad_user }}"
     group: "{{ hashi_nomad_group }}"
     mode: '0755'
-  become: true

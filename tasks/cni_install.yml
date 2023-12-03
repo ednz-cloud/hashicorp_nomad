@@ -14,7 +14,6 @@
   changed_when: false
   check_mode: false
   register: _cni_plugins_is_installed
-  become: true
 
 - name: "Check current cni plugin version"
   ansible.builtin.command: "cat {{ hashi_nomad_cni_plugins_install_path }}/version"
@@ -22,7 +21,6 @@
   check_mode: false
   register: _cni_plugins_old_release
   when: _cni_plugins_is_installed.stat.exists
-  become: true
 
 - name: "Set facts for wanted cni plugins release"
   ansible.builtin.set_fact:
@@ -41,10 +39,8 @@
     path: "{{ hashi_nomad_cni_plugins_install_path }}"
     state: directory
     mode: "0775"
-  become: true
 
 - name: "Install cni plugins"
-  become: true
   when: hashi_nomad_cni_plugins_current_version is not defined
     or hashi_nomad_cni_plugins_wanted_version not in hashi_nomad_cni_plugins_current_version
   block:
