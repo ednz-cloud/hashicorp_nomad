@@ -83,8 +83,8 @@ This variable sets all of the configuration parameters for nomad. For more infor
 Dependencies
 ------------
 
-`ednxzu.manage_repositories` to configure the hashicorp apt repository.
-`ednxzu.manage_apt_packages` to install nomad.
+`ednz_cloud.manage_repositories` to configure the hashicorp apt repository.
+`ednz_cloud.manage_apt_packages` to install nomad.
 
 Example Playbook
 ----------------
@@ -93,7 +93,7 @@ Example Playbook
 # calling the role inside a playbook with either the default or group_vars/host_vars
 - hosts: servers
   roles:
-    - ednxzu.hashicorp_nomad
+    - ednz_cloud.hashicorp_nomad
 ```
 
 License

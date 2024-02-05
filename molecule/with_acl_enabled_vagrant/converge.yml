@@ -3,6 +3,6 @@
   hosts: all
   become: true
   tasks:
-    - name: "Include ednxzu.hashicorp_nomad"
+    - name: "Include ednz_cloud.hashicorp_nomad"
       ansible.builtin.include_role:
-        name: "ednxzu.hashicorp_nomad"
+        name: "ednz_cloud.hashicorp_nomad"
