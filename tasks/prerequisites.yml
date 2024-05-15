@@ -1,29 +1,29 @@
 ---
 # task/prerequisites file for hashicorp_nomad
-- name: "Create group {{ hashi_nomad_group }}"
+- name: "Create group {{ hashicorp_nomad_group }}"
   ansible.builtin.group:
-    name: "{{ hashi_nomad_user }}"
+    name: "{{ hashicorp_nomad_user }}"
     state: present
 
-- name: "Create user {{ hashi_nomad_user }}"
+- name: "Create user {{ hashicorp_nomad_user }}"
   ansible.builtin.user:
-    name: "{{ hashi_nomad_user }}"
-    group: "{{ hashi_nomad_group }}"
+    name: "{{ hashicorp_nomad_user }}"
+    group: "{{ hashicorp_nomad_group }}"
     shell: /bin/false
     state: present
 
-- name: "Create directory {{ hashi_nomad_config_dir }}"
+- name: "Create directory {{ hashicorp_nomad_config_dir }}"
   ansible.builtin.file:
-    path: "{{ hashi_nomad_config_dir }}"
+    path: "{{ hashicorp_nomad_config_dir }}"
     state: directory
-    owner: "{{ hashi_nomad_user }}"
-    group: "{{ hashi_nomad_group }}"
-    mode: '0755'
+    owner: "{{ hashicorp_nomad_user }}"
+    group: "{{ hashicorp_nomad_group }}"
+    mode: "0755"
 
-- name: "Create directory {{ hashi_nomad_data_dir }}"
+- name: "Create directory {{ hashicorp_nomad_data_dir }}"
   ansible.builtin.file:
-    path: "{{ hashi_nomad_data_dir }}"
+    path: "{{ hashicorp_nomad_data_dir }}"
     state: directory
-    owner: "{{ hashi_nomad_user }}"
-    group: "{{ hashi_nomad_group }}"
-    mode: '0755'
+    owner: "{{ hashicorp_nomad_user }}"
+    group: "{{ hashicorp_nomad_group }}"
+    mode: "0755"

@@ -3,22 +3,22 @@ Description=Nomad
 Documentation=https://developer.hashicorp.com/nomad/docs
 Wants=network-online.target
 After=network-online.target
-ConditionFileNotEmpty={{ hashi_nomad_config_dir }}/nomad.json
-{% if hashi_nomad_configuration.consul.address is defined %}
+ConditionFileNotEmpty={{ hashicorp_nomad_config_dir }}/nomad.json
+{% if hashicorp_nomad_configuration.consul.address is defined %}
 Wants=consul.service
 After=consul.service
 {% endif %}
 
 [Service]
-EnvironmentFile=-{{ hashi_nomad_config_dir }}/nomad.env
-{% if not (hashi_nomad_configuration.client.enabled is defined and hashi_nomad_configuration.client.enabled) %}
-User={{ hashi_nomad_user }}
-Group={{ hashi_nomad_group }}
+EnvironmentFile=-{{ hashicorp_nomad_config_dir }}/nomad.env
+{% if not (hashicorp_nomad_configuration.client.enabled is defined and hashicorp_nomad_configuration.client.enabled) %}
+User={{ hashicorp_nomad_user }}
+Group={{ hashicorp_nomad_group }}
 {% else %}
 User=root
 Group=root
 {% endif %}
-ExecStart=/usr/bin/nomad agent -config {{ hashi_nomad_config_dir }}/nomad.json
+ExecStart=/usr/bin/nomad agent -config {{ hashicorp_nomad_config_dir }}/nomad.json
 ExecReload=/bin/kill -HUP $MAINPID
 KillMode=process
 KillSignal=SIGINT

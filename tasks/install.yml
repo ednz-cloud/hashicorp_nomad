@@ -6,13 +6,13 @@
   vars:
     manage_repositories_enable_default_repo: false
     manage_repositories_enable_custom_repo: true
-    manage_repositories_custom_repo: "{{ hashi_nomad_repository }}"
+    manage_repositories_custom_repo: "{{ hashicorp_nomad_repository }}"
 
-- name: "Install nomad:{{ hashi_nomad_version }}"
+- name: "Install nomad:{{ hashicorp_nomad_version }}"
   ansible.builtin.include_role:
     name: ednz_cloud.manage_apt_packages
   vars:
-    manage_apt_packages_list: "{{ hashi_nomad_packages }}"
+    manage_apt_packages_list: "{{ hashicorp_nomad_packages }}"
 
 - name: "Copy systemd service file for nomad"
   ansible.builtin.template:
