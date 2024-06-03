@@ -27,20 +27,59 @@
 - name: "Copy extra configuration files"
   when: hashicorp_nomad_extra_files
   block:
-    - name: "Create directory {{ hashicorp_nomad_extra_files_dst }}"
-      ansible.builtin.file:
-        path: "{{ hashicorp_nomad_extra_files_dst }}"
-        state: directory
-        owner: "{{ hashicorp_nomad_user }}"
-        group: "{{ hashicorp_nomad_group }}"
-        mode: "0755"
+    - name: "Update container volume list"
+      ansible.builtin.set_fact:
+        hashicorp_nomad_container_volume_map: "{{
+          (hashicorp_nomad_container_volume_map + [
+          item.dest + ':' + item.dest
+          ]) | unique }}"
+      loop: "{{ hashicorp_nomad_extra_files_list }}"
+      loop_control:
+        loop_var: item
+      delegate_to: localhost
 
-    - name: "Copy extra configuration files"
+    - name: "Get extra file types"
+      ansible.builtin.stat:
+        path: "{{ item.src }}"
+      loop: "{{ hashicorp_nomad_extra_files_list }}"
+      register: hashicorp_nomad_extra_file_stat
+      delegate_to: localhost
+
+    - name: "Set list for file sources"
+      vars:
+        _hashicorp_nomad_file_sources: []
+      ansible.builtin.set_fact:
+        _hashicorp_nomad_file_sources: "{{ _hashicorp_nomad_file_sources + [item.item] }}"
+      when: item.stat.isreg
+      loop: "{{ hashicorp_nomad_extra_file_stat.results }}"
+      loop_control:
+        loop_var: item
+      delegate_to: localhost
+
+    - name: "Set list for directory sources"
+      vars:
+        _hashicorp_nomad_dir_sources: []
+      ansible.builtin.set_fact:
+        _hashicorp_nomad_dir_sources: "{{ _hashicorp_nomad_dir_sources + [item.item] }}"
+      when: item.stat.isdir
+      loop: "{{ hashicorp_nomad_extra_file_stat.results }}"
+      loop_control:
+        loop_var: item
+      delegate_to: localhost
+
+    - name: "Template extra file sources"
       ansible.builtin.template:
-        src: "{{ item }}"
-        dest: "{{ hashicorp_nomad_extra_files_dst }}/{{ (item | basename).split('.')[:-1] | join('.')}}"
+        src: "{{ item.src }}"
+        dest: "{{ item.dest | regex_replace('\\.j2$', '') }}"
         owner: "{{ hashicorp_nomad_user }}"
         group: "{{ hashicorp_nomad_group }}"
-        mode: "0600"
-      with_fileglob:
-        - "{{ hashicorp_nomad_extra_files_src }}/*"
+        mode: "0700"
+      loop: "{{ _hashicorp_nomad_file_sources }}"
+      when: _hashicorp_nomad_file_sources is defined
+
+    - name: "Template extra directory sources"
+      ansible.builtin.include_tasks: recursive_copy_extra_dirs.yml
+      loop: "{{ _hashicorp_nomad_dir_sources }}"
+      loop_control:
+        loop_var: dir_source_item
+      when: _hashicorp_nomad_dir_sources is defined

@@ -10,8 +10,7 @@ hashicorp_nomad_deploy_method: host # deployment method, either host or docker
 hashicorp_nomad_env_variables: {}
 hashicorp_nomad_data_dir: /opt/nomad
 hashicorp_nomad_extra_files: false
-hashicorp_nomad_extra_files_src: /tmp/extra_files
-hashicorp_nomad_extra_files_dst: /etc/nomad.d/extra_files
+hashicorp_nomad_extra_files_list: []
 #! nomad configuration
 hashicorp_nomad_configuration:
   bind_addr: "0.0.0.0"
