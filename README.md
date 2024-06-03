@@ -64,11 +64,11 @@ This variable defines whether or not there is extra configuration files to copy 
 ```yaml
 hashicorp_nomad_extra_files_list: [] # by default, set to []
   # - src: /tmp/directory
-  #   dest: /etc/consul.d/directory
+  #   dest: /etc/nomad.d/directory
   # - src: /tmp/file.conf
-  #   dest: /etc/consul.d/file.conf
-  # - src: /etc/consul.d/file.j2
-  #   dest: /etc/consul.d/file
+  #   dest: /etc/nomad.d/file.conf
+  # - src: /etc/nomad.d/file.j2
+  #   dest: /etc/nomad.d/file
 ```
 This variable lets you copy extra configuration files and directories over to the target host(s). It is a list of dicts. Each dict needs a `src` and a `dest` attribute. The source is expected to be located on the deployment machine. The source can be either a file or a directory. The destination must match the type of the source (file to file, dir to dir). If the source is a directory, every file inside of it will be recursively copied and templated over to the target directory.
 
