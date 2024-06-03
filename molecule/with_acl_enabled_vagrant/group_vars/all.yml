@@ -1,6 +1,5 @@
 ---
 hashicorp_nomad_install: true
-hashicorp_nomad_auto_update: true
 hashicorp_nomad_cni_plugins_install: true
 hashicorp_nomad_start_service: true
 hashicorp_nomad_cni_plugins_version: latest

@@ -27,4 +27,4 @@ hashicorp_nomad_repository:
 hashicorp_nomad_packages:
   - name: nomad
     version: "{{ hashicorp_nomad_version }}"
-    state: "{% if hashicorp_nomad_auto_update %}latest{% else %}present{% endif %}"
+    state: present
