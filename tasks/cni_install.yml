@@ -38,7 +38,9 @@
   ansible.builtin.file:
     path: "{{ hashicorp_nomad_cni_plugins_install_path }}"
     state: directory
-    mode: "0775"
+    owner: "{{ hashicorp_nomad_user }}"
+    group: "{{ hashicorp_nomad_group }}"
+    mode: "0755"
 
 - name: "Install cni plugins"
   when: hashicorp_nomad_cni_plugins_current_version is not defined
@@ -59,6 +61,9 @@
       ansible.builtin.unarchive:
         src: "/tmp/cni_plugin.tgz"
         dest: "{{ hashicorp_nomad_cni_plugins_install_path }}"
+        owner: "{{ hashicorp_nomad_user }}"
+        group: "{{ hashicorp_nomad_group }}"
+        mode: "0755"
         remote_src: true
 
     - name: "Remove temporary archive"
