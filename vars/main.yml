@@ -3,15 +3,20 @@
 hashicorp_nomad_user: nomad
 hashicorp_nomad_group: nomad
 hashicorp_nomad_config_dir: "/etc/nomad.d"
-hashicorp_nomad_cni_plugins_arch_map:
-  i386: "386"
+hashicorp_nomad_binary_path: /usr/local/bin
+hashicorp_nomad_deb_architecture_map:
   x86_64: "amd64"
-  aarch64: "arm"
+  aarch64: "arm64"
   armv7l: "arm"
   armv6l: "arm"
-hashicorp_nomad_cni_plugins_arch: "{{ hashicorp_nomad_cni_plugins_arch_map[ansible_architecture] | default(ansible_architecture) }}"
-hashicorp_nomad_cni_plugins_github_api: https://api.github.com/repos/containernetworking/plugins
-hashicorp_nomad_cni_plugins_github_url: https://github.com/containernetworking/plugins
+hashicorp_nomad_architecture: "{{ hashicorp_nomad_deb_architecture_map[ansible_architecture] | default(ansible_architecture) }}"
+hashicorp_nomad_github_api: https://api.github.com/repos
+hashicorp_nomad_cni_github_project: containernetworking/plugins
+hashicorp_nomad_github_project: hashicorp/nomad
+hashicorp_nomad_github_url: https://github.com
+
+hashicorp_nomad_repository_url: https://releases.hashicorp.com/nomad
+
 hashicorp_nomad_repository:
   - name: hashicorp
     uri: "https://apt.releases.hashicorp.com"
