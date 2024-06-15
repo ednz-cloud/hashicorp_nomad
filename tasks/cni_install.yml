@@ -4,7 +4,7 @@
   vars:
     _cni_plugins_url_ext: "{% if hashicorp_nomad_cni_plugins_version == 'latest'%}releases{% else %}releases/tags{% endif %}"
   ansible.builtin.uri:
-    url: "{{ hashicorp_nomad_github_api }}/{{ _cni_plugins_url_ext }}/{{ hashicorp_nomad_cni_plugins_version }}"
+    url: "{{ hashicorp_nomad_github_api }}/{{ hashicorp_nomad_cni_github_project }}/{{ _cni_plugins_url_ext }}/{{ hashicorp_nomad_cni_plugins_version }}"
     return_content: true
   register: _cni_plugins_new_release
 
@@ -48,7 +48,7 @@
   block:
     - name: "Install cni plugins version:{{ hashicorp_nomad_cni_plugins_version }}"
       ansible.builtin.get_url:
-        url: "{{ hashicorp_nomad_github_url }}/releases/download/v{{ hashicorp_nomad_cni_plugins_wanted_version }}/cni-plugins-linux-{{ hashicorp_nomad_architecture }}-v{{ hashicorp_nomad_cni_plugins_wanted_version }}.tgz"
+        url: "{{ hashicorp_nomad_github_url }}/{{ hashicorp_nomad_cni_github_project }}/releases/download/v{{ hashicorp_nomad_cni_plugins_wanted_version }}/cni-plugins-linux-{{ hashicorp_nomad_architecture }}-v{{ hashicorp_nomad_cni_plugins_wanted_version }}.tgz"
         dest: "/tmp/cni_plugin.tgz"
         mode: "0644"
       register: _cni_plugins_download_archive

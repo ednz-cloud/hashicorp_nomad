@@ -11,7 +11,7 @@ None.
 
 Role Variables
 --------------
-Available variables are listed below, along with default values. A sample file for the default values is available in `default/hashicorp_nomad.yml.sample` in case you need it for any `group_vars` or `host_vars` configuration.
+Available variables are listed below, along with default values.
 
 ```yaml
 hashicorp_nomad_install: true # by default, set to true
@@ -41,13 +41,7 @@ This variable defines where to install the CNI plugins. Note that it should be r
 ```yaml
 hashicorp_nomad_version: latest # by default, set to latest
 ```
-This variable specifies the version of nomad to install when `hashicorp_nomad_install` is set to `true`. The version to specify is the version of the package on the hashicorp repository (`1.5.1-1` for example). This can be found by running `apt-cache madison consul` on a machine with the repository installed.
-
-```yaml
-hashicorp_nomad_deploy_method: host # by default, set to host
-```
-This variable defines the method of deployment of nomad. The `host` method installs the binary directly on the host, and runs nomad as a systemd service. The `docker` method install nomad as a docker container.
-> Currently, only the `host` method is available, the `docker` method will be added later.
+This variable specifies the version of nomad to install when `hashicorp_nomad_install` is set to `true`. The version to specify is either `latest` (NOT RECOMMENDED), or any tag present on the [GitHub Repository](https://github.com/hashicorp/nomad/releases) (without the leading `v`). Loose tags are **not supported** (1.7, 1, etc..).
 
 ```yaml
 hashicorp_nomad_env_variables: # by default, set to empty
@@ -96,9 +90,6 @@ hashicorp_nomad_extra_files_list: [] # by default, set to []
 ```
 all the files shown above will be copied over, and the directory structure inside `directory` will be preserved.
 
-> **Note**
-> In case you're using the `docker` deployment method, every destination path will be added automatically to the `hashicorp_nomad_extra_container_volumes` variable, so you don't need to set them manually.
-
 ```yaml
 hashicorp_nomad_configuration: {} # by default, set to a simple configuration
 ```
@@ -107,8 +98,7 @@ This variable sets all of the configuration parameters for nomad. For more infor
 Dependencies
 ------------
 
-`ednz_cloud.manage_repositories` to configure the hashicorp apt repository.
-`ednz_cloud.manage_apt_packages` to install nomad.
+`ednz_cloud.manage_apt_packages` to install some required packages.
 
 Example Playbook
 ----------------

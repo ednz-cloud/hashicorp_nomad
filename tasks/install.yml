@@ -1,18 +1,139 @@
 ---
 # task/install file for hashicorp_nomad
-- name: "Configure hashicorp repository"
-  ansible.builtin.include_role:
-    name: ednz_cloud.manage_repositories
-  vars:
-    manage_repositories_enable_default_repo: false
-    manage_repositories_enable_custom_repo: true
-    manage_repositories_custom_repo: "{{ hashicorp_nomad_repository }}"
+# - name: "Configure hashicorp repository"
+#   ansible.builtin.include_role:
+#     name: ednz_cloud.manage_repositories
+#   vars:
+#     manage_repositories_enable_default_repo: false
+#     manage_repositories_enable_custom_repo: true
+#     manage_repositories_custom_repo: "{{ hashicorp_nomad_repository }}"
+#
+# - name: "Install nomad:{{ hashicorp_nomad_version }}"
+#   ansible.builtin.include_role:
+#     name: ednz_cloud.manage_apt_packages
+#   vars:
+#     manage_apt_packages_list: "{{ hashicorp_nomad_packages }}"
 
-- name: "Install nomad:{{ hashicorp_nomad_version }}"
-  ansible.builtin.include_role:
-    name: ednz_cloud.manage_apt_packages
-  vars:
-    manage_apt_packages_list: "{{ hashicorp_nomad_packages }}"
+- name: "Get latest release of nomad"
+  when: hashicorp_nomad_version == 'latest'
+  block:
+    - name: "Get latest nomad release from github api"
+      ansible.builtin.uri:
+        url: "{{ hashicorp_nomad_github_api }}/hashicorp/nomad/releases/latest"
+        return_content: true
+      register: _hashicorp_nomad_latest_release
+
+    - name: "Set wanted nomad version to latest tag"
+      ansible.builtin.set_fact:
+        _hashicorp_nomad_wanted_version: "{{ _hashicorp_nomad_latest_release.json['tag_name']|regex_replace('v', '') }}"
+
+- name: "Set wanted nomad version to {{ hashicorp_nomad_version }}"
+  ansible.builtin.set_fact:
+    _hashicorp_nomad_wanted_version: "{{ hashicorp_nomad_version|regex_replace('v', '') }}"
+  when: hashicorp_nomad_version != 'latest'
+
+- name: "Get current nomad version"
+  block:
+    - name: "Stat nomad version file"
+      ansible.builtin.stat:
+        path: "{{ hashicorp_nomad_config_dir }}/.version"
+      changed_when: false
+      check_mode: false
+      register: _hashicorp_nomad_version_file
+
+    - name: "Get current nomad version"
+      ansible.builtin.slurp:
+        src: "{{ _hashicorp_nomad_version_file.stat.path }}"
+      when:
+        - _hashicorp_nomad_version_file.stat.exists
+        - _hashicorp_nomad_version_file.stat.isreg
+      register: _hashicorp_nomad_current_version
+
+- name: "Download and install nomad binary"
+  when: _hashicorp_nomad_current_version is not defined
+    or _hashicorp_nomad_wanted_version != (_hashicorp_nomad_current_version.content|default('')|b64decode)
+  block:
+    - name: "Set nomad package name to download"
+      ansible.builtin.set_fact:
+        _hashicorp_nomad_package_name: >-
+          nomad_{{ _hashicorp_nomad_wanted_version }}_linux_{{ hashicorp_nomad_deb_architecture_map[ansible_architecture] }}.zip
+        _hashicorp_nomad_shasum_file_name: >-
+          nomad_{{ _hashicorp_nomad_wanted_version }}_SHA256SUMS
+
+    - name: "Download checksum file for nomad archive"
+      ansible.builtin.get_url:
+        url: "{{ hashicorp_nomad_repository_url }}/{{ _hashicorp_nomad_wanted_version }}/{{ _hashicorp_nomad_shasum_file_name }}"
+        dest: "/tmp/{{ _hashicorp_nomad_shasum_file_name }}"
+        mode: "0644"
+      register: _hashicorp_nomad_checksum_file
+      until: _hashicorp_nomad_checksum_file is succeeded
+      retries: 5
+      delay: 2
+      check_mode: false
+
+    - name: "Extract correct checksum from checksum file"
+      ansible.builtin.command:
+        cmd: 'grep "{{ _hashicorp_nomad_package_name }}" /tmp/{{ _hashicorp_nomad_shasum_file_name }}'
+      changed_when: false
+      register: _hashicorp_nomad_expected_checksum_line
+
+    - name: "Parse the expected checksum"
+      ansible.builtin.set_fact:
+        _hashicorp_nomad_expected_checksum: "{{ _hashicorp_nomad_expected_checksum_line.stdout.split()[0] }}"
+
+    - name: "Download nomad binary archive"
+      ansible.builtin.get_url:
+        url: "{{ hashicorp_nomad_repository_url }}/{{ _hashicorp_nomad_wanted_version }}/{{ _hashicorp_nomad_package_name }}"
+        dest: "/tmp/{{ _hashicorp_nomad_package_name }}"
+        mode: "0644"
+        checksum: "sha256:{{ _hashicorp_nomad_expected_checksum }}"
+      register: _hashicorp_nomad_binary_archive
+      until: _hashicorp_nomad_binary_archive is succeeded
+      retries: 5
+      delay: 2
+      check_mode: false
+
+    - name: "Create temporary directory for archive decompression"
+      ansible.builtin.file:
+        path: /tmp/nomad
+        state: directory
+        mode: "0755"
+
+    - name: "Unpack nomad archive"
+      ansible.builtin.unarchive:
+        src: "/tmp/{{ _hashicorp_nomad_package_name }}"
+        dest: "/tmp/nomad"
+        owner: "{{ hashicorp_nomad_user }}"
+        group: "{{ hashicorp_nomad_group }}"
+        mode: "0755"
+        remote_src: true
+
+    - name: "Copy nomad binary to {{ hashicorp_nomad_binary_path }}"
+      ansible.builtin.copy:
+        src: /tmp/nomad/nomad
+        dest: "{{ hashicorp_nomad_binary_path }}"
+        owner: root
+        group: root
+        mode: "0755"
+        remote_src: true
+        force: true
+
+    - name: "Update nomad version file"
+      ansible.builtin.copy:
+        content: "{{ _hashicorp_nomad_wanted_version }}"
+        dest: "{{ hashicorp_nomad_config_dir }}/.version"
+        owner: "{{ hashicorp_nomad_user }}"
+        group: "{{ hashicorp_nomad_group }}"
+        mode: "0600"
+
+    - name: "Cleanup temporary directory"
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /tmp/nomad
+        - /tmp/{{ _hashicorp_nomad_package_name }}
+        - /tmp/{{ _hashicorp_nomad_shasum_file_name }}
 
 - name: "Copy systemd service file for nomad"
   ansible.builtin.template:
