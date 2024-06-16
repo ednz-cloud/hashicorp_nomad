@@ -11,17 +11,12 @@ None.
 
 Role Variables
 --------------
-Available variables are listed below, along with default values. A sample file for the default values is available in `default/hashicorp_nomad.yml.sample` in case you need it for any `group_vars` or `host_vars` configuration.
+Available variables are listed below, along with default values.
 
 ```yaml
 hashicorp_nomad_install: true # by default, set to true
 ```
 This variable defines if the nomad package is to be installed or not before configuring. If you install nomad using another task, you can set this to `false`.
-
-```yaml
-hashicorp_nomad_auto_update: false # by default, set to false
-```
-This variable allows you to choose to automatically update nomad if a newer version is available. Updating nomad is usually pretty safe if done on a regular basis, but for better control over the upgrade process, see `hashicorp_nomad_version`.
 
 ```yaml
 hashicorp_nomad_cni_plugins_install: true # by default, set to true
@@ -46,13 +41,7 @@ This variable defines where to install the CNI plugins. Note that it should be r
 ```yaml
 hashicorp_nomad_version: latest # by default, set to latest
 ```
-This variable specifies the version of nomad to install when `hashicorp_nomad_install` is set to `true`. The version to specify is the version of the package on the hashicorp repository (`1.5.1-1` for example). This can be found by running `apt-cache madison consul` on a machine with the repository installed.
-
-```yaml
-hashicorp_nomad_deploy_method: host # by default, set to host
-```
-This variable defines the method of deployment of nomad. The `host` method installs the binary directly on the host, and runs nomad as a systemd service. The `docker` method install nomad as a docker container.
-> Currently, only the `host` method is available, the `docker` method will be added later.
+This variable specifies the version of nomad to install when `hashicorp_nomad_install` is set to `true`. The version to specify is either `latest` (NOT RECOMMENDED), or any tag present on the [GitHub Repository](https://github.com/hashicorp/nomad/releases) (without the leading `v`). Loose tags are **not supported** (1.7, 1, etc..).
 
 ```yaml
 hashicorp_nomad_env_variables: # by default, set to empty
@@ -65,15 +54,41 @@ hashicorp_nomad_extra_files: false # by default, set to false
 ```
 This variable defines whether or not there is extra configuration files to copy to the target. If there are, these extra files are expected to be jinja2 templates located all in the same directory, and will be copied to the specified directory on the target machine.
 
-```yaml
-hashicorp_nomad_extra_files_src: /tmp/extra_files # by default, set to /tmp/extra_files
-```
-This variable defines the source directory (without the trailing /) for the extra files to be copied in case there are some.
 
 ```yaml
-hashicorp_nomad_extra_files_dst: /etc/nomad.d/extra_files # by default, set to /etc/nomad.d/extra_files
+hashicorp_nomad_extra_files_list: [] # by default, set to []
+  # - src: /tmp/directory
+  #   dest: /etc/nomad.d/directory
+  # - src: /tmp/file.conf
+  #   dest: /etc/nomad.d/file.conf
+  # - src: /etc/nomad.d/file.j2
+  #   dest: /etc/nomad.d/file
 ```
-This variable defines the destination directory (without the trailing /) for the extra files to be copied.
+This variable lets you copy extra configuration files and directories over to the target host(s). It is a list of dicts. Each dict needs a `src` and a `dest` attribute. The source is expected to be located on the deployment machine. The source can be either a file or a directory. The destination must match the type of the source (file to file, dir to dir). If the source is a directory, every file inside of it will be recursively copied and templated over to the target directory.
+
+For example, if you have the following source files to copy:
+
+```bash
+├── directory
+│   ├── recursive
+│   │   ├── test4.j2
+│   │   └── test.j2024.conf
+│   └── test3
+├── file
+├── file2.j2
+```
+You can set:
+
+```yaml
+hashicorp_nomad_extra_files_list: [] # by default, set to []
+  - src: /tmp/directory
+    dest: /etc/nomad.d/directory
+  - src: /tmp/file
+    dest: /etc/nomad.d/file.conf
+  - src: /etc/nomad.d/file2.j2
+    dest: /etc/nomad.d/file2.conf
+```
+all the files shown above will be copied over, and the directory structure inside `directory` will be preserved.
 
 ```yaml
 hashicorp_nomad_configuration: {} # by default, set to a simple configuration
@@ -83,8 +98,7 @@ This variable sets all of the configuration parameters for nomad. For more infor
 Dependencies
 ------------
 
-`ednz_cloud.manage_repositories` to configure the hashicorp apt repository.
-`ednz_cloud.manage_apt_packages` to install nomad.
+`ednz_cloud.manage_apt_packages` to install some required packages.
 
 Example Playbook
 ----------------
