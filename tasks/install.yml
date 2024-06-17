@@ -1,19 +1,4 @@
 ---
-# task/install file for hashicorp_nomad
-# - name: "Configure hashicorp repository"
-#   ansible.builtin.include_role:
-#     name: ednz_cloud.manage_repositories
-#   vars:
-#     manage_repositories_enable_default_repo: false
-#     manage_repositories_enable_custom_repo: true
-#     manage_repositories_custom_repo: "{{ hashicorp_nomad_repository }}"
-#
-# - name: "Install nomad:{{ hashicorp_nomad_version }}"
-#   ansible.builtin.include_role:
-#     name: ednz_cloud.manage_apt_packages
-#   vars:
-#     manage_apt_packages_list: "{{ hashicorp_nomad_packages }}"
-
 - name: "Get latest release of nomad"
   when: hashicorp_nomad_version == 'latest'
   block:
@@ -126,6 +111,10 @@
         group: "{{ hashicorp_nomad_group }}"
         mode: "0600"
 
+    - name: "Set restart-check variable"
+      ansible.builtin.set_fact:
+        _hashicorp_nomad_service_need_restart: true
+
     - name: "Cleanup temporary directory"
       ansible.builtin.file:
         path: "{{ item }}"
@@ -142,5 +131,10 @@
     owner: root
     group: root
     mode: "0644"
-  notify:
-    - "systemctl-daemon-reload"
+  register: _hashicorp_nomad_unit_file
+
+- name: "Set reload-check & restart-check variable"
+  ansible.builtin.set_fact:
+    _hashicorp_nomad_service_need_reload: true
+    _hashicorp_nomad_service_need_restart: true
+  when: _hashicorp_nomad_unit_file.changed # noqa: no-handler

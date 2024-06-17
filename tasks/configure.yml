@@ -1,9 +1,13 @@
 ---
 # task/configure file for hashicorp_nomad
-- name: "Ensure default nomad.hcl is removed"
-  ansible.builtin.file:
-    path: /etc/nomad.d/nomad.hcl
-    state: absent
+- name: "Create nomad.env"
+  ansible.builtin.template:
+    src: nomad.env.j2
+    dest: "{{ hashicorp_nomad_config_dir }}/nomad.env"
+    owner: "{{ hashicorp_nomad_user }}"
+    group: "{{ hashicorp_nomad_group }}"
+    mode: "0600"
+  register: _hashicorp_nomad_env_file
 
 - name: "Copy nomad.json template"
   ansible.builtin.template:
@@ -12,32 +16,17 @@
     owner: "{{ hashicorp_nomad_user }}"
     group: "{{ hashicorp_nomad_group }}"
     mode: "0600"
-  notify:
-    - "systemctl-enable-nomad"
-    - "systemctl-restart-nomad"
+  register: _hashicorp_nomad_config_file
 
-- name: "Create nomad.env"
-  ansible.builtin.template:
-    src: nomad.env.j2
-    dest: "{{ hashicorp_nomad_config_dir }}/nomad.env"
-    owner: "{{ hashicorp_nomad_user }}"
-    group: "{{ hashicorp_nomad_group }}"
-    mode: "0600"
+- name: "Set restart-check variable"
+  ansible.builtin.set_fact:
+    _hashicorp_nomad_service_need_restart: true
+  when: _hashicorp_nomad_env_file.changed or
+    _hashicorp_nomad_config_file.changed
 
 - name: "Copy extra configuration files"
   when: hashicorp_nomad_extra_files
   block:
-    - name: "Update container volume list"
-      ansible.builtin.set_fact:
-        hashicorp_nomad_container_volume_map: "{{
-          (hashicorp_nomad_container_volume_map + [
-          item.dest + ':' + item.dest
-          ]) | unique }}"
-      loop: "{{ hashicorp_nomad_extra_files_list }}"
-      loop_control:
-        loop_var: item
-      delegate_to: localhost
-
     - name: "Get extra file types"
       ansible.builtin.stat:
         path: "{{ item.src }}"
