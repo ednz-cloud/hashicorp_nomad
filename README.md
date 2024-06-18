@@ -36,18 +36,18 @@ This variable defines where to install the CNI plugins. Note that it should be r
 ```yaml
 hashicorp_nomad_version: latest # by default, set to latest
 ```
-This variable specifies the version of nomad to install when `hashicorp_nomad_install` is set to `true`. The version to specify is either `latest` (NOT RECOMMENDED), or any tag present on the [GitHub Repository](https://github.com/hashicorp/nomad/releases) (without the leading `v`). Loose tags are **not supported** (1.7, 1, etc..).
+This variable specifies the version of nomad to install. The version to specify is either `latest` (NOT RECOMMENDED), or any tag present on the [GitHub Repository](https://github.com/hashicorp/nomad/releases) (without the leading `v`). Loose tags are **not supported** (1.7, 1, etc..).
 
 ```yaml
 hashicorp_nomad_env_variables: # by default, set to empty
-  env_var: value
+  ENV_VAR: value
 ```
-This value is a list of key/value that will populate the `nomad.env` file. You do not have to capitalize the KEYS, as it will be done automatically.
+This value is a list of key/value that will populate the `nomad.env` file.
 
 ```yaml
 hashicorp_nomad_extra_files: false # by default, set to false
 ```
-This variable defines whether or not there is extra configuration files to copy to the target. If there are, these extra files are expected to be jinja2 templates located all in the same directory, and will be copied to the specified directory on the target machine.
+This variable defines whether or not there is extra configuration files to copy to the target.
 
 
 ```yaml

@@ -1,11 +1,5 @@
 ---
 # task/prerequisites file for hashicorp_nomad
-- name: "Install pre-required system packages"
-  ansible.builtin.include_role:
-    name: ednz_cloud.manage_apt_packages
-  vars:
-    manage_apt_packages_list: "{{ hashicorp_nomad_required_packages }}"
-
 - name: "Create group {{ hashicorp_nomad_group }}"
   ansible.builtin.group:
     name: "{{ hashicorp_nomad_user }}"

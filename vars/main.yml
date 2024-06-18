@@ -21,8 +21,3 @@ hashicorp_nomad_cni_github_project: containernetworking/plugins
 hashicorp_nomad_github_project: hashicorp/nomad
 hashicorp_nomad_github_url: https://github.com
 hashicorp_nomad_repository_url: https://releases.hashicorp.com/nomad
-
-hashicorp_nomad_required_packages:
-  - name: unzip
-    version: latest
-    state: present
