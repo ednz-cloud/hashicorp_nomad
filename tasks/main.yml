@@ -19,6 +19,11 @@
 - name: "Import configure.yml"
   ansible.builtin.include_tasks: configure.yml
 
+- name: "Enable service: {{ hashicorp_nomad_service_name }}"
+  ansible.builtin.service:
+    name: "{{ hashicorp_nomad_service_name }}"
+    enabled: true
+
 - name: "Reload systemd daemon"
   ansible.builtin.systemd:
     daemon_reload: true
