@@ -28,6 +28,22 @@
               - "'/bin/false' in nomad_user.ansible_facts.getent_passwd['nomad']"
               - "'nomad' in nomad_group.ansible_facts.getent_group.keys()"
 
+    - name: "Test: binary /usr/local/bin/nomad"
+      block:
+        - name: "Stat binary /usr/local/bin/nomad"
+          ansible.builtin.stat:
+            path: "/usr/local/bin/nomad"
+          register: stat_usr_local_bin_nomad
+
+        - name: "Verify binary /usr/local/bin/nomad"
+          ansible.builtin.assert:
+            that:
+              - stat_usr_local_bin_nomad.stat.exists
+              - stat_usr_local_bin_nomad.stat.isreg
+              - stat_usr_local_bin_nomad.stat.pw_name == 'root'
+              - stat_usr_local_bin_nomad.stat.gr_name == 'root'
+              - stat_usr_local_bin_nomad.stat.mode == '0755'
+
     - name: "Test: directory /etc/nomad.d"
       block:
         - name: "Stat directory /etc/nomad.d"
