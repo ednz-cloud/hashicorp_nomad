@@ -1,3 +1,14 @@
+## v0.3.0 (2024-06-18)
+
+### Feat
+
+- **tests**: add binary check to ensure nomad is installed correctly
+- add more precise restart checks and force restart at the end of the role instead of relying on handlers
+
+### Fix
+
+- add task to enable service when install and configuration is complete
+
 ## v0.2.0 (2024-06-16)
 
 ### Feat
