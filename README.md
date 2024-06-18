@@ -1,5 +1,9 @@
 hashicorp_nomad
 =========
+![Ansible Badge](https://img.shields.io/badge/Ansible-E00?logo=ansible&logoColor=fff&style=for-the-badge)
+![HashiCorp Badge](https://img.shields.io/badge/HashiCorp-000?logo=hashicorp&logoColor=fff&style=for-the-badge)
+![Nomad Badge](https://img.shields.io/badge/Nomad-00CA8E?logo=nomad&logoColor=fff&style=for-the-badge)
+
 > This repository is only a mirror. Development and testing is done on a private gitea server.
 
 This role install and configure nomad on **debian-based** distributions.
