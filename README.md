@@ -7,16 +7,11 @@ This role install and configure nomad on **debian-based** distributions.
 Requirements
 ------------
 
-None.
+The `unzip` package needs to be installed on the target host(s) to be able to decompress the consul release bundle.
 
 Role Variables
 --------------
 Available variables are listed below, along with default values.
-
-```yaml
-hashicorp_nomad_install: true # by default, set to true
-```
-This variable defines if the nomad package is to be installed or not before configuring. If you install nomad using another task, you can set this to `false`.
 
 ```yaml
 hashicorp_nomad_cni_plugins_install: true # by default, set to true
@@ -98,7 +93,7 @@ This variable sets all of the configuration parameters for nomad. For more infor
 Dependencies
 ------------
 
-`ednz_cloud.manage_apt_packages` to install some required packages.
+None.
 
 Example Playbook
 ----------------
