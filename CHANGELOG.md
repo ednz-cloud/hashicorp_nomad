@@ -1,3 +1,13 @@
+## v0.4.0 (2024-06-19)
+
+### Feat
+
+- add noble to list of supported distro
+
+### Fix
+
+- remove unecessary and deprecated code, cleanup documentation
+
 ## v0.3.0 (2024-06-18)
 
 ### Feat
