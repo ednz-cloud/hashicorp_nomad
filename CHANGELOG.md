@@ -1,3 +1,9 @@
+## v0.4.1 (2024-07-12)
+
+### Fix
+
+- check if nomad service is not in a failed state to trigger restart if needed
+
 ## v0.4.0 (2024-06-19)
 
 ### Feat
