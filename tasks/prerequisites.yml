@@ -27,3 +27,20 @@
     owner: "{{ hashicorp_nomad_user }}"
     group: "{{ hashicorp_nomad_group }}"
     mode: "0755"
+
+- name: "Create directory {{ hashicorp_nomad_certs_dir }}"
+  ansible.builtin.file:
+    path: "{{ hashicorp_nomad_certs_dir }}"
+    state: directory
+    owner: "{{ hashicorp_nomad_user }}"
+    group: "{{ hashicorp_nomad_group }}"
+    mode: "0755"
+
+- name: "Create directory {{ hashicorp_nomad_logs_dir }}"
+  ansible.builtin.file:
+    path: "{{ hashicorp_nomad_logs_dir }}"
+    state: directory
+    owner: "{{ hashicorp_nomad_user }}"
+    group: "{{ hashicorp_nomad_group }}"
+    mode: "0755"
+  when: hashicorp_nomad_enable_log_to_file

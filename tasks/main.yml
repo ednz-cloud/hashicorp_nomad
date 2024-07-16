@@ -5,39 +5,41 @@
     _hashicorp_nomad_service_need_reload: false
     _hashicorp_nomad_service_need_restart: false
 
-- name: "Import prerequisites.yml"
+- name: "Nomad | Import merge_variables.yml"
+  ansible.builtin.include_tasks: merge_variables.yml
+
+- name: "Nomad | Import prerequisites.yml"
   ansible.builtin.include_tasks: prerequisites.yml
 
-- name: "Import install.yml"
+- name: "Nomad | Import install.yml"
   ansible.builtin.include_tasks: install.yml
-  when: hashicorp_nomad_install
 
-- name: "Import cni_install.yml"
+- name: "Nomad | Import cni_install.yml"
   ansible.builtin.include_tasks: cni_install.yml
   when: hashicorp_nomad_cni_plugins_install
 
-- name: "Import configure.yml"
+- name: "Nomad | Import configure.yml"
   ansible.builtin.include_tasks: configure.yml
 
-- name: "Populate service facts"
+- name: "Nomad | Populate service facts"
   ansible.builtin.service_facts:
 
-- name: "Set restart-check variable"
+- name: "Nomad | Set restart-check variable"
   ansible.builtin.set_fact:
     _hashicorp_nomad_service_need_restart: true
   when: ansible_facts.services[hashicorp_nomad_service_name~'.service'].state != 'running'
 
-- name: "Enable service: {{ hashicorp_nomad_service_name }}"
+- name: "Nomad | Enable service: {{ hashicorp_nomad_service_name }}"
   ansible.builtin.service:
     name: "{{ hashicorp_nomad_service_name }}"
     enabled: true
 
-- name: "Reload systemd daemon"
+- name: "Nomad | Reload systemd daemon"
   ansible.builtin.systemd:
     daemon_reload: true
   when: _hashicorp_nomad_service_need_reload
 
-- name: "Start service: {{ hashicorp_nomad_service_name }}"
+- name: "Nomad | Start service: {{ hashicorp_nomad_service_name }}"
   ansible.builtin.service:
     name: "{{ hashicorp_nomad_service_name }}"
     state: restarted
