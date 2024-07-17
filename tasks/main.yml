@@ -1,6 +1,6 @@
 ---
 # task/main file for hashicorp_nomad
-- name: "Set reload-check & restart-check variable"
+- name: "Nomad | Set reload-check & restart-check variable"
   ansible.builtin.set_fact:
     _hashicorp_nomad_service_need_reload: false
     _hashicorp_nomad_service_need_restart: false

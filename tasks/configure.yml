@@ -1,6 +1,6 @@
 ---
 # task/configure file for hashicorp_nomad
-- name: "Create nomad.env"
+- name: "Nomad | Create nomad.env"
   ansible.builtin.template:
     src: nomad.env.j2
     dest: "{{ hashicorp_nomad_config_dir }}/nomad.env"
@@ -9,7 +9,7 @@
     mode: "0600"
   register: _hashicorp_nomad_env_file
 
-- name: "Copy nomad.json template"
+- name: "Nomad | Copy nomad.json template"
   ansible.builtin.template:
     src: nomad.json.j2
     dest: "{{ hashicorp_nomad_config_dir }}/nomad.json"
@@ -18,23 +18,23 @@
     mode: "0600"
   register: _hashicorp_nomad_config_file
 
-- name: "Set restart-check variable"
+- name: "Nomad | Set restart-check variable"
   ansible.builtin.set_fact:
     _hashicorp_nomad_service_need_restart: true
   when: _hashicorp_nomad_env_file.changed or
     _hashicorp_nomad_config_file.changed
 
-- name: "Copy extra configuration files"
+- name: "Nomad | Copy extra configuration files"
   when: hashicorp_nomad_extra_files
   block:
-    - name: "Get extra file types"
+    - name: "Nomad | Get extra file types"
       ansible.builtin.stat:
         path: "{{ item.src }}"
       loop: "{{ hashicorp_nomad_extra_files_list }}"
       register: hashicorp_nomad_extra_file_stat
       delegate_to: localhost
 
-    - name: "Set list for file sources"
+    - name: "Nomad | Set list for file sources"
       vars:
         _hashicorp_nomad_file_sources: []
       ansible.builtin.set_fact:
@@ -45,7 +45,7 @@
         loop_var: item
       delegate_to: localhost
 
-    - name: "Set list for directory sources"
+    - name: "Nomad | Set list for directory sources"
       vars:
         _hashicorp_nomad_dir_sources: []
       ansible.builtin.set_fact:
@@ -56,7 +56,7 @@
         loop_var: item
       delegate_to: localhost
 
-    - name: "Template extra file sources"
+    - name: "Nomad | Template extra file sources"
       ansible.builtin.template:
         src: "{{ item.src }}"
         dest: "{{ item.dest | regex_replace('\\.j2$', '') }}"
@@ -66,7 +66,7 @@
       loop: "{{ _hashicorp_nomad_file_sources }}"
       when: _hashicorp_nomad_file_sources is defined
 
-    - name: "Template extra directory sources"
+    - name: "Nomad | Template extra directory sources"
       ansible.builtin.include_tasks: recursive_copy_extra_dirs.yml
       loop: "{{ _hashicorp_nomad_dir_sources }}"
       loop_control:
