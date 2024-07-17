@@ -135,6 +135,8 @@
       block:
         - name: "Command nomad acl bootstrap"
           ansible.builtin.command: "nomad acl bootstrap -json"
+          environment:
+            NOMAD_ADDR: "http://{{ ansible_default_ipv4.address }}:4646"
           changed_when: false
           register: nomad_acl_bootstrap
 
@@ -145,6 +147,7 @@
         - name: "Command nomad var put"
           ansible.builtin.command: "nomad var put secret/foobar foo=bar"
           environment:
+            NOMAD_ADDR: "http://{{ ansible_default_ipv4.address }}:4646"
             NOMAD_TOKEN: "{{ acl_token }}"
           changed_when: false
           register: nomad_var_put
@@ -152,6 +155,7 @@
         - name: "Command nomad var get"
           ansible.builtin.command: "nomad var get secret/foobar"
           environment:
+            NOMAD_ADDR: "http://{{ ansible_default_ipv4.address }}:4646"
             NOMAD_TOKEN: "{{ acl_token }}"
           changed_when: false
           register: nomad_var_get
@@ -159,6 +163,7 @@
         - name: "Command nomad var purge"
           ansible.builtin.command: "nomad var purge secret/foobar"
           environment:
+            NOMAD_ADDR: "http://{{ ansible_default_ipv4.address }}:4646"
             NOMAD_TOKEN: "{{ acl_token }}"
           changed_when: false
           register: nomad_var_purge
@@ -166,6 +171,7 @@
         - name: "Command nomad server members"
           ansible.builtin.command: "nomad server members"
           environment:
+            NOMAD_ADDR: "http://{{ ansible_default_ipv4.address }}:4646"
             NOMAD_TOKEN: "{{ acl_token }}"
           changed_when: false
           register: nomad_server_members

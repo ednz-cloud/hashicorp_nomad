@@ -1,6 +1,6 @@
 ---
 # task/cni_install file for hashicorp_nomad
-- name: "Get release for cni_plugins:{{ hashicorp_nomad_cni_plugins_version }}"
+- name: "Nomad | Get release for cni_plugins:{{ hashicorp_nomad_cni_plugins_version }}"
   vars:
     _cni_plugins_url_ext: "{% if hashicorp_nomad_cni_plugins_version == 'latest'%}releases{% else %}releases/tags{% endif %}"
   ansible.builtin.uri:
@@ -8,33 +8,33 @@
     return_content: true
   register: _cni_plugins_new_release
 
-- name: "Check if cni plugin is already installed"
+- name: "Nomad | Check if cni plugin is already installed"
   ansible.builtin.stat:
     path: "{{ hashicorp_nomad_cni_plugins_install_path }}/version"
   changed_when: false
   check_mode: false
   register: _cni_plugins_is_installed
 
-- name: "Check current cni plugin version"
+- name: "Nomad | Check current cni plugin version"
   ansible.builtin.command: "cat {{ hashicorp_nomad_cni_plugins_install_path }}/version"
   changed_when: false
   check_mode: false
   register: _cni_plugins_old_release
   when: _cni_plugins_is_installed.stat.exists
 
-- name: "Set facts for wanted cni plugins release"
+- name: "Nomad | Set facts for wanted cni plugins release"
   ansible.builtin.set_fact:
     hashicorp_nomad_cni_plugins_wanted_version: "{{ _cni_plugins_new_release.json['tag_name']|regex_replace('v', '') }}"
   when: _cni_plugins_new_release.json is defined
     and (_cni_plugins_new_release.json | length > 0)
 
-- name: "Set facts for current cni plugins release"
+- name: "Nomad | Set facts for current cni plugins release"
   ansible.builtin.set_fact:
     hashicorp_nomad_cni_plugins_current_version: "{{ _cni_plugins_old_release.stdout | regex_replace('v', '') }}"
   when: _cni_plugins_old_release.stdout is defined
     and (_cni_plugins_old_release.stdout | length > 0)
 
-- name: "Create cni directory"
+- name: "Nomad | Create cni directory"
   ansible.builtin.file:
     path: "{{ hashicorp_nomad_cni_plugins_install_path }}"
     state: directory
@@ -42,11 +42,11 @@
     group: "{{ hashicorp_nomad_group }}"
     mode: "0755"
 
-- name: "Install cni plugins"
+- name: "Nomad | Install cni plugins"
   when: hashicorp_nomad_cni_plugins_current_version is not defined
     or hashicorp_nomad_cni_plugins_wanted_version not in hashicorp_nomad_cni_plugins_current_version
   block:
-    - name: "Install cni plugins version:{{ hashicorp_nomad_cni_plugins_version }}"
+    - name: "Nomad | Install cni plugins version:{{ hashicorp_nomad_cni_plugins_version }}"
       ansible.builtin.get_url:
         url: "{{ hashicorp_nomad_github_url }}/{{ hashicorp_nomad_cni_github_project }}/releases/download/v{{ hashicorp_nomad_cni_plugins_wanted_version }}/cni-plugins-linux-{{ hashicorp_nomad_architecture }}-v{{ hashicorp_nomad_cni_plugins_wanted_version }}.tgz"
         dest: "/tmp/cni_plugin.tgz"
@@ -57,7 +57,7 @@
       delay: 2
       check_mode: false
 
-    - name: "Unpack cni plugins"
+    - name: "Nomad | Unpack cni plugins"
       ansible.builtin.unarchive:
         src: "/tmp/cni_plugin.tgz"
         dest: "{{ hashicorp_nomad_cni_plugins_install_path }}"
@@ -66,12 +66,12 @@
         mode: "0755"
         remote_src: true
 
-    - name: "Remove temporary archive"
+    - name: "Nomad | Remove temporary archive"
       ansible.builtin.file:
         path: "/tmp/cni_plugin.tgz"
         state: absent
 
-    - name: "Update version file"
+    - name: "Nomad | Update version file"
       ansible.builtin.copy:
         content: "{{ hashicorp_nomad_cni_plugins_wanted_version }}"
         dest: "{{ hashicorp_nomad_cni_plugins_install_path }}/version"

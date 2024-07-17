@@ -2,22 +2,31 @@
 # vars file for hashicorp_nomad
 hashicorp_nomad_user: nomad
 hashicorp_nomad_group: nomad
-
-hashicorp_nomad_config_dir: "/etc/nomad.d"
 hashicorp_nomad_binary_path: /usr/local/bin/nomad
-
 hashicorp_nomad_deb_architecture_map:
   x86_64: "amd64"
   aarch64: "arm64"
   armv7l: "arm"
   armv6l: "arm"
-
 hashicorp_nomad_architecture: "{{ hashicorp_nomad_deb_architecture_map[ansible_architecture] | default(ansible_architecture) }}"
-
 hashicorp_nomad_service_name: "nomad"
-
 hashicorp_nomad_github_api: https://api.github.com/repos
 hashicorp_nomad_cni_github_project: containernetworking/plugins
 hashicorp_nomad_github_project: hashicorp/nomad
 hashicorp_nomad_github_url: https://github.com
 hashicorp_nomad_repository_url: https://releases.hashicorp.com/nomad
+
+hashicorp_nomad_configuration:
+  datacenter: "{{ hashicorp_nomad_datacenter }}"
+  region: "{{ hashicorp_nomad_region }}"
+  data_dir: "{{ hashicorp_nomad_data_dir }}"
+  leave_on_interrupt: "{{ hashicorp_nomad_leave_on_interrupt }}"
+  leave_on_terminate: "{{ hashicorp_nomad_leave_on_terminate }}"
+  acl: "{{ hashicorp_nomad_acl_configuration }}"
+  server: "{{ hashicorp_nomad_server_configuration }}"
+  client: "{{ hashicorp_nomad_client_configuration }}"
+  ui: "{{ hashicorp_nomad_ui_configuration }}"
+
+hashicorp_nomad_configuration_string: |
+  server:
+    bootstrap_expect: {{ hashicorp_nomad_server_bootstrap_expect }}
