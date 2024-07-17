@@ -1,3 +1,10 @@
+## v1.0.0 (2024-07-17)
+
+### Feat
+
+- ename tasks, add docsible readme
+- rework variables to integrate better with ednz_cloud.hashistack collection while still being usable on its own
+
 ## v0.4.1 (2024-07-12)
 
 ### Fix
