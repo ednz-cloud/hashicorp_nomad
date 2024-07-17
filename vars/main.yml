@@ -26,6 +26,7 @@ hashicorp_nomad_configuration:
   server: "{{ hashicorp_nomad_server_configuration }}"
   client: "{{ hashicorp_nomad_client_configuration }}"
   ui: "{{ hashicorp_nomad_ui_configuration }}"
+  log_level: "{{ hashicorp_nomad_log_level }}"
 
 hashicorp_nomad_configuration_string: |
   server:

@@ -122,10 +122,10 @@ hashicorp_nomad_driver_extra_configuration: {}
 # logging #
 ###########
 
+hashicorp_nomad_log_level: info
 hashicorp_nomad_enable_log_to_file: false
-hashicorp_nomad_logging_configuration:
+hashicorp_nomad_log_to_file_configuration:
   log_file: "{{ hashicorp_nomad_logs_dir }}/nomad.log"
-  log_level: info
   log_rotate_duration: 24h
   log_rotate_max_files: 30
 

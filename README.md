@@ -24,9 +24,7 @@ Description: Install and configure hashicorp nomad for debian-based distros.
 
 **These are static variables with lower priority**
 
-#### File: main.yml
-
-
+#### File: defaults/main.yml
 
 | Var          | Type         | Value       |Required    | Title       |
 |--------------|--------------|-------------|-------------|-------------|
@@ -64,8 +62,9 @@ Description: Install and configure hashicorp nomad for debian-based distros.
 | [hashicorp_nomad_driver_enable_qemu](defaults/main.yml#L113)   | bool   | `False`  |  n/a  |  n/a |
 | [hashicorp_nomad_driver_configuration](defaults/main.yml#L115)   | dict   | `{'raw_exec': {'enabled': False}}`  |  n/a  |  n/a |
 | [hashicorp_nomad_driver_extra_configuration](defaults/main.yml#L119)   | dict   | `{}`  |  n/a  |  n/a |
-| [hashicorp_nomad_enable_log_to_file](defaults/main.yml#L125)   | bool   | `False`  |  n/a  |  n/a |
-| [hashicorp_nomad_logging_configuration](defaults/main.yml#L126)   | dict   | `{'log_file': '{{ hashicorp_nomad_logs_dir }}/nomad.log', 'log_level': 'info', 'log_rotate_duration': '24h', 'log_rotate_max_files': 30}`  |  n/a  |  n/a |
+| [hashicorp_nomad_log_level](defaults/main.yml#L125)   | str   | `info`  |  n/a  |  n/a |
+| [hashicorp_nomad_enable_log_to_file](defaults/main.yml#L126)   | bool   | `False`  |  n/a  |  n/a |
+| [hashicorp_nomad_log_to_file_configuration](defaults/main.yml#L127)   | dict   | `{'log_file': '{{ hashicorp_nomad_logs_dir }}/nomad.log', 'log_rotate_duration': '24h', 'log_rotate_max_files': 30}`  |  n/a  |  n/a |
 | [hashicorp_nomad_acl_configuration](defaults/main.yml#L136)   | dict   | `{'enabled': False, 'token_ttl': '30s', 'policy_ttl': '60s', 'role_ttl': '60s'}`  |  n/a  |  n/a |
 | [hashicorp_nomad_enable_tls](defaults/main.yml#L146)   | bool   | `False`  |  n/a  |  n/a |
 | [hashicorp_nomad_tls_configuration](defaults/main.yml#L147)   | dict   | `{'http': True, 'rpc': True, 'ca_file': '/etc/ssl/certs/ca-certificates.crt', 'cert_file': '{{ hashicorp_nomad_certs_dir }}/cert.pem', 'key_file': '{{ hashicorp_nomad_certs_dir }}/key.pem', 'verify_server_hostname': True}`  |  n/a  |  n/a |
@@ -83,10 +82,9 @@ Description: Install and configure hashicorp nomad for debian-based distros.
 ### Vars
 
 **These are variables with higher priority**
-#### File: main.yml
+#### File: vars/main.yml
 
-
-| Var          | Type         | Value       | Required    | Title       |
+| Var          | Type         | Value       |Required    | Title       |
 |--------------|--------------|-------------|-------------|-------------|
 | [hashicorp_nomad_user](vars/main.yml#L3)    | str   | `nomad`  | n/a | n/a |
 | [hashicorp_nomad_group](vars/main.yml#L4)    | str   | `nomad`  | n/a | n/a |
@@ -99,8 +97,8 @@ Description: Install and configure hashicorp nomad for debian-based distros.
 | [hashicorp_nomad_github_project](vars/main.yml#L15)    | str   | `hashicorp/nomad`  | n/a | n/a |
 | [hashicorp_nomad_github_url](vars/main.yml#L16)    | str   | `https://github.com`  | n/a | n/a |
 | [hashicorp_nomad_repository_url](vars/main.yml#L17)    | str   | `https://releases.hashicorp.com/nomad`  | n/a | n/a |
-| [hashicorp_nomad_configuration](vars/main.yml#L19)    | dict   | `{'datacenter': '{{ hashicorp_nomad_datacenter }}', 'region': '{{ hashicorp_nomad_region }}', 'data_dir': '{{ hashicorp_nomad_data_dir }}', 'leave_on_interrupt': '{{ hashicorp_nomad_leave_on_interrupt }}', 'leave_on_terminate': '{{ hashicorp_nomad_leave_on_terminate }}', 'acl': '{{ hashicorp_nomad_acl_configuration }}', 'server': '{{ hashicorp_nomad_server_configuration }}', 'client': '{{ hashicorp_nomad_client_configuration }}', 'ui': '{{ hashicorp_nomad_ui_configuration }}'}`  | n/a | n/a |
-| [hashicorp_nomad_configuration_string](vars/main.yml#L30)    | str   | `server:
+| [hashicorp_nomad_configuration](vars/main.yml#L19)    | dict   | `{'datacenter': '{{ hashicorp_nomad_datacenter }}', 'region': '{{ hashicorp_nomad_region }}', 'data_dir': '{{ hashicorp_nomad_data_dir }}', 'leave_on_interrupt': '{{ hashicorp_nomad_leave_on_interrupt }}', 'leave_on_terminate': '{{ hashicorp_nomad_leave_on_terminate }}', 'acl': '{{ hashicorp_nomad_acl_configuration }}', 'server': '{{ hashicorp_nomad_server_configuration }}', 'client': '{{ hashicorp_nomad_client_configuration }}', 'ui': '{{ hashicorp_nomad_ui_configuration }}', 'log_level': '{{ hashicorp_nomad_log_level }}'}`  | n/a | n/a |
+| [hashicorp_nomad_configuration_string](vars/main.yml#L31)    | str   | `server:
   bootstrap_expect: {{ hashicorp_nomad_server_bootstrap_expect }}
 `  | n/a | n/a |
 
@@ -108,52 +106,53 @@ Description: Install and configure hashicorp nomad for debian-based distros.
 ### Tasks
 
 
-#### File: recursive_copy_extra_dirs.yml
+#### File: tasks/recursive_copy_extra_dirs.yml
 
-| Name | Module | Has Conditions |
-| ---- | ------ | --------- |
-| Nomad \| Ensure destination directory exists | ansible.builtin.file | False |
-| Nomad \| Create extra directory sources | ansible.builtin.file | True |
-| Nomad \| Template extra directory sources | ansible.builtin.template | True |
+| Name | Module | Has Conditions | Comments |
+| ---- | ------ | --------- |  -------- |
+| Nomad \| Ensure destination directory exists | ansible.builtin.file | False |  |
+| Nomad \| Create extra directory sources | ansible.builtin.file | True |  |
+| Nomad \| Template extra directory sources | ansible.builtin.template | True |  |
 
-#### File: merge_variables.yml
+#### File: tasks/merge_variables.yml
 
-| Name | Module | Has Conditions |
-| ---- | ------ | --------- |
-| Nomad \| Merge stringified configuration | vars | False |
-| Nomad \| Merge addresses configuration | vars | False |
-| Nomad \| Merge consul integration configuration | block | True |
-| Nomad \| Merge consul tls configuration | block | True |
-| Nomad \| Merge consul default client configuration | vars | False |
-| Nomad \| Merge consul configuration for nomad servers | block | True |
-| Nomad \| Merge consul default server configuration | vars | False |
-| Nomad \| Merge consul configuration for nomad clients | block | True |
-| Nomad \| Merge consul default client configuration | vars | False |
-| Nomad \| Merge consul tls client configuration | vars | True |
-| Nomad \| Merge consul block into main configuration | vars | False |
-| Nomad \| Merge TLS configuration | block | True |
-| Nomad \| Merge TLS configuration | vars | False |
-| Nomad \| Add certificates directory to extra_files_dir | ansible.builtin.set_fact | False |
-| Nomad \| Merge plugin configuration | vars | True |
-| Nomad \| Merge extra configuration settings | vars | False |
+| Name | Module | Has Conditions | Comments |
+| ---- | ------ | --------- |  -------- |
+| Nomad \| Merge stringified configuration | vars | False |  |
+| Nomad \| Merge addresses configuration | vars | False |  |
+| Nomad \| Merge consul integration configuration | block | True |  |
+| Nomad \| Merge consul tls configuration | block | True |  |
+| Nomad \| Merge consul default client configuration | vars | False |  |
+| Nomad \| Merge consul configuration for nomad servers | block | True |  |
+| Nomad \| Merge consul default server configuration | vars | False |  |
+| Nomad \| Merge consul configuration for nomad clients | block | True |  |
+| Nomad \| Merge consul default client configuration | vars | False |  |
+| Nomad \| Merge consul tls client configuration | vars | True |  |
+| Nomad \| Merge consul block into main configuration | vars | False |  |
+| Nomad \| Merge TLS configuration | block | True |  |
+| Nomad \| Merge TLS configuration | vars | False |  |
+| Nomad \| Add certificates directory to extra_files_dir | ansible.builtin.set_fact | False |  |
+| Nomad \| Merge plugin configuration | vars | True |  |
+| Nomad \| Merge extra configuration settings | vars | False |  |
+| Nomad \| Merge log to file configuration | vars | True |  |
 
-#### File: main.yml
+#### File: tasks/main.yml
 
-| Name | Module | Has Conditions |
-| ---- | ------ | --------- |
-| Nomad \| Set reload-check & restart-check variable | ansible.builtin.set_fact | False |
-| Nomad \| Import merge_variables.yml | ansible.builtin.include_tasks | False |
-| Nomad \| Import prerequisites.yml | ansible.builtin.include_tasks | False |
-| Nomad \| Import install.yml | ansible.builtin.include_tasks | False |
-| Nomad \| Import cni_install.yml | ansible.builtin.include_tasks | True |
-| Nomad \| Import configure.yml | ansible.builtin.include_tasks | False |
-| Nomad \| Populate service facts | ansible.builtin.service_facts | False |
-| Nomad \| Set restart-check variable | ansible.builtin.set_fact | True |
-| Nomad \| Enable service: {{ hashicorp_nomad_service_name }} | ansible.builtin.service | False |
-| Nomad \| Reload systemd daemon | ansible.builtin.systemd | True |
-| Nomad \| Start service: {{ hashicorp_nomad_service_name }} | ansible.builtin.service | True |
+| Name | Module | Has Conditions | Comments |
+| ---- | ------ | --------- |  -------- |
+| Nomad \| Set reload-check & restart-check variable | ansible.builtin.set_fact | False |  |
+| Nomad \| Import merge_variables.yml | ansible.builtin.include_tasks | False |  |
+| Nomad \| Import prerequisites.yml | ansible.builtin.include_tasks | False |  |
+| Nomad \| Import install.yml | ansible.builtin.include_tasks | False |  |
+| Nomad \| Import cni_install.yml | ansible.builtin.include_tasks | True |  |
+| Nomad \| Import configure.yml | ansible.builtin.include_tasks | False |  |
+| Nomad \| Populate service facts | ansible.builtin.service_facts | False |  |
+| Nomad \| Set restart-check variable | ansible.builtin.set_fact | True |  |
+| Nomad \| Enable service: {{ hashicorp_nomad_service_name }} | ansible.builtin.service | False |  |
+| Nomad \| Reload systemd daemon | ansible.builtin.systemd | True |  |
+| Nomad \| Start service: {{ hashicorp_nomad_service_name }} | ansible.builtin.service | True |  |
 
-#### File: install.yml
+#### File: tasks/install.yml
 
 | Name | Module | Has Conditions |
 | ---- | ------ | --------- |
@@ -179,46 +178,46 @@ Description: Install and configure hashicorp nomad for debian-based distros.
 | Nomad \| Copy systemd service file for nomad | ansible.builtin.template | False |
 | Nomad \| Set reload-check & restart-check variable | ansible.builtin.set_fact | True |
 
-#### File: cni_install.yml
+#### File: tasks/cni_install.yml
 
-| Name | Module | Has Conditions |
-| ---- | ------ | --------- |
-| Nomad \| Get release for cni_plugins:{{ hashicorp_nomad_cni_plugins_version }} | vars | False |
-| Nomad \| Check if cni plugin is already installed | ansible.builtin.stat | False |
-| Nomad \| Check current cni plugin version | ansible.builtin.command | True |
-| Nomad \| Set facts for wanted cni plugins release | ansible.builtin.set_fact | True |
-| Nomad \| Set facts for current cni plugins release | ansible.builtin.set_fact | True |
-| Nomad \| Create cni directory | ansible.builtin.file | False |
-| Nomad \| Install cni plugins | block | True |
-| Nomad \| Install cni plugins version:{{ hashicorp_nomad_cni_plugins_version }} | ansible.builtin.get_url | False |
-| Nomad \| Unpack cni plugins | ansible.builtin.unarchive | False |
-| Nomad \| Remove temporary archive | ansible.builtin.file | False |
-| Nomad \| Update version file | ansible.builtin.copy | False |
+| Name | Module | Has Conditions | Comments |
+| ---- | ------ | --------- |  -------- |
+| Nomad \| Get release for cni_plugins:{{ hashicorp_nomad_cni_plugins_version }} | vars | False |  |
+| Nomad \| Check if cni plugin is already installed | ansible.builtin.stat | False |  |
+| Nomad \| Check current cni plugin version | ansible.builtin.command | True |  |
+| Nomad \| Set facts for wanted cni plugins release | ansible.builtin.set_fact | True |  |
+| Nomad \| Set facts for current cni plugins release | ansible.builtin.set_fact | True |  |
+| Nomad \| Create cni directory | ansible.builtin.file | False |  |
+| Nomad \| Install cni plugins | block | True |  |
+| Nomad \| Install cni plugins version:{{ hashicorp_nomad_cni_plugins_version }} | ansible.builtin.get_url | False |  |
+| Nomad \| Unpack cni plugins | ansible.builtin.unarchive | False |  |
+| Nomad \| Remove temporary archive | ansible.builtin.file | False |  |
+| Nomad \| Update version file | ansible.builtin.copy | False |  |
 
-#### File: prerequisites.yml
+#### File: tasks/prerequisites.yml
 
-| Name | Module | Has Conditions |
-| ---- | ------ | --------- |
-| Nomad \| Create group {{ hashicorp_nomad_group }} | ansible.builtin.group | False |
-| Nomad \| Create user {{ hashicorp_nomad_user }} | ansible.builtin.user | False |
-| Nomad \| Create directory {{ hashicorp_nomad_config_dir }} | ansible.builtin.file | False |
-| Nomad \| Create directory {{ hashicorp_nomad_data_dir }} | ansible.builtin.file | False |
-| Nomad \| Create directory {{ hashicorp_nomad_certs_dir }} | ansible.builtin.file | False |
-| Nomad \| Create directory {{ hashicorp_nomad_logs_dir }} | ansible.builtin.file | True |
+| Name | Module | Has Conditions | Comments |
+| ---- | ------ | --------- |  -------- |
+| Nomad \| Create group {{ hashicorp_nomad_group }} | ansible.builtin.group | False |  |
+| Nomad \| Create user {{ hashicorp_nomad_user }} | ansible.builtin.user | False |  |
+| Nomad \| Create directory {{ hashicorp_nomad_config_dir }} | ansible.builtin.file | False |  |
+| Nomad \| Create directory {{ hashicorp_nomad_data_dir }} | ansible.builtin.file | False |  |
+| Nomad \| Create directory {{ hashicorp_nomad_certs_dir }} | ansible.builtin.file | False |  |
+| Nomad \| Create directory {{ hashicorp_nomad_logs_dir }} | ansible.builtin.file | True |  |
 
-#### File: configure.yml
+#### File: tasks/configure.yml
 
-| Name | Module | Has Conditions |
-| ---- | ------ | --------- |
-| Nomad \| Create nomad.env | ansible.builtin.template | False |
-| Nomad \| Copy nomad.json template | ansible.builtin.template | False |
-| Nomad \| Set restart-check variable | ansible.builtin.set_fact | True |
-| Nomad \| Copy extra configuration files | block | True |
-| Nomad \| Get extra file types | ansible.builtin.stat | False |
-| Nomad \| Set list for file sources | vars | True |
-| Nomad \| Set list for directory sources | vars | True |
-| Nomad \| Template extra file sources | ansible.builtin.template | True |
-| Nomad \| Template extra directory sources | ansible.builtin.include_tasks | True |
+| Name | Module | Has Conditions | Comments |
+| ---- | ------ | --------- |  -------- |
+| Nomad \| Create nomad.env | ansible.builtin.template | False |  |
+| Nomad \| Copy nomad.json template | ansible.builtin.template | False |  |
+| Nomad \| Set restart-check variable | ansible.builtin.set_fact | True |  |
+| Nomad \| Copy extra configuration files | block | True |  |
+| Nomad \| Get extra file types | ansible.builtin.stat | False |  |
+| Nomad \| Set list for file sources | vars | True |  |
+| Nomad \| Set list for directory sources | vars | True |  |
+| Nomad \| Template extra file sources | ansible.builtin.template | True |  |
+| Nomad \| Template extra directory sources | ansible.builtin.include_tasks | True |  |
 
 
 

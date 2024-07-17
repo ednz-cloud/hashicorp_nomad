@@ -128,7 +128,13 @@
       hashicorp_nomad_configuration |
       combine(_config_to_merge, recursive=true)
       }}"
-# - debug:
-#     msg: "{{ hashicorp_nomad_configuration }}"
 
-# - fail:
+- name: "Nomad | Merge log to file configuration"
+  vars:
+    _config_to_merge: "{{ hashicorp_nomad_log_to_file_configuration }}"
+  ansible.builtin.set_fact:
+    hashicorp_nomad_configuration: "{{
+      hashicorp_nomad_configuration |
+      combine(_config_to_merge, recursive=true)
+      }}"
+  when: hashicorp_nomad_enable_log_to_file
