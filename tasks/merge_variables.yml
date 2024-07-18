@@ -138,3 +138,13 @@
       combine(_config_to_merge, recursive=true)
       }}"
   when: hashicorp_nomad_enable_log_to_file
+
+- name: "Nomad | Merge telemetry configuration"
+  vars:
+    _config_to_merge:
+      telemetry: "{{ hashicorp_nomad_telemetry_configuration }}"
+  ansible.builtin.set_fact:
+    hashicorp_nomad_configuration: "{{
+      hashicorp_nomad_configuration |
+      combine(_config_to_merge, recursive=true)
+      }}"

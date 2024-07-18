@@ -161,15 +161,15 @@ hashicorp_nomad_certificates_extra_files_dir:
 # telemetry configuration #
 ###########################
 
-#   telemetry:
-#     collection_interval: 1s
-#     disable_hostname: false
-#     use_node_name: false
-#     publish_allocation_metrics: false
-#     publish_node_metrics: false
-#     prefix_filter: []
-#     disable_dispatched_job_summary_metrics: false
-#     prometheus_metrics: false
+hashicorp_nomad_telemetry_configuration:
+  collection_interval: 10s
+  disable_hostname: false
+  use_node_name: false
+  publish_allocation_metrics: false
+  publish_node_metrics: false
+  prefix_filter: []
+  disable_dispatched_job_summary_metrics: false
+  prometheus_metrics: false
 
 ######################
 # consul integration #
