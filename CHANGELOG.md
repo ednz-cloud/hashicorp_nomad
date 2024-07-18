@@ -1,3 +1,10 @@
+## v1.1.0 (2024-07-18)
+
+### Feat
+
+- add telemetry configuration
+- make log_level variable its own thing to allow setting the log level without logging to file
+
 ## v1.0.0 (2024-07-17)
 
 ### Feat
